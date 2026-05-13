@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechQuest — Oficina Virtual</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --blue-dark: #0D1B2A;
+            --blue-mid: #1A3A5C;
+            --blue: #1E6FBF;
+            --blue-light: #4A9EE0;
+            --orange: #F7732A;
+            --orange-light: #FFAD6F;
+            --white: #F4F8FF;
+            --gray: #8BA3BC;
+            --card-bg: #162840;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--blue-dark);
+            color: var(--white);
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ── BACKGROUND PATTERN ── */
+        .bg-pattern {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background-image:
+                radial-gradient(circle at 80% 10%, rgba(30, 111, 191, .25) 0%, transparent 50%),
+                radial-gradient(circle at 10% 80%, rgba(247, 115, 42, .12) 0%, transparent 45%);
+        }
+
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background-image:
+                linear-gradient(rgba(74, 158, 224, .06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(74, 158, 224, .06) 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
+
+        .page {
+            position: relative;
+            z-index: 1;
+            max-width: 430px;
+            margin: 0 auto;
+            padding: 0 20px 40px;
+        }
+
+        /* ── HEADER ── */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 0 8px;
+        }
+
+        .logo-mark {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+        }
+
+        .logo-text {
+            font-family: 'Syne', sans-serif;
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: -.3px;
+        }
+
+        .logo-text span {
+            color: var(--orange);
+        }
+
+        .badge-version {
+            font-size: 11px;
+            font-weight: 600;
+            background: rgba(247, 115, 42, .15);
+            color: var(--orange-light);
+            border: 1px solid rgba(247, 115, 42, .3);
+            padding: 3px 9px;
+            border-radius: 20px;
+            letter-spacing: .5px;
+        }
+
+        /* ── HERO ── */
+        .hero {
+            padding: 24px 0 20px;
+            text-align: center;
+        }
+
+        .hero-illustration {
+            margin: 0 auto 24px;
+            display: block;
+        }
+
+        .hero-eyebrow {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: var(--orange);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .hero-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 30px;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 14px;
+        }
+
+        .hero-title em {
+            color: var(--blue-light);
+            font-style: normal;
+        }
+
+        .hero-desc {
+            font-size: 14px;
+            color: var(--gray);
+            line-height: 1.6;
+            max-width: 300px;
+            margin: 0 auto 28px;
+        }
+
+        .btn-start {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--orange);
+            color: #fff;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            padding: 14px 32px;
+            border-radius: 14px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 8px 24px rgba(247, 115, 42, .4);
+            transition: transform .15s, box-shadow .15s;
+        }
+
+        .btn-start:active {
+            transform: scale(.97);
+            box-shadow: 0 4px 12px rgba(247, 115, 42, .3);
+        }
+
+        .btn-start svg {
+            flex-shrink: 0;
+        }
+
+        /* ── STATS BAR ── */
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 28px;
+            margin: 28px 0 0;
+            padding: 16px 20px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            border: 1px solid rgba(74, 158, 224, .12);
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-family: 'Syne', sans-serif;
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--white);
+        }
+
+        .stat-value span {
+            color: var(--orange);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--gray);
+            margin-top: 2px;
+            letter-spacing: .3px;
+        }
+
+        /* ── SECTION TITLE ── */
+        .section-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            margin: 28px 0 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(74, 158, 224, .15);
+        }
+
+        /* ── MODULE CARDS ── */
+        .modules {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .module-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(74, 158, 224, .12);
+            border-radius: 18px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+            transition: transform .15s, border-color .15s, box-shadow .15s;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .module-card:active {
+            transform: scale(.98);
+        }
+
+        .module-card:hover {
+            border-color: rgba(74, 158, 224, .35);
+            box-shadow: 0 4px 20px rgba(30, 111, 191, .2);
+        }
+
+        .module-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .mod-1 {
+            background: rgba(30, 111, 191, .18);
+        }
+
+        .mod-2 {
+            background: rgba(247, 115, 42, .15);
+        }
+
+        .mod-3 {
+            background: rgba(74, 158, 224, .15);
+        }
+
+        .mod-4 {
+            background: rgba(26, 176, 120, .15);
+        }
+
+        .module-info {
+            flex: 1;
+        }
+
+        .module-number {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            color: var(--gray);
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .module-name {
+            font-family: 'Syne', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 1.25;
+            margin-bottom: 5px;
+        }
+
+        .module-tags {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            font-size: 10px;
+            font-weight: 500;
+            padding: 2px 7px;
+            border-radius: 6px;
+            background: rgba(74, 158, 224, .1);
+            color: var(--blue-light);
+            border: 1px solid rgba(74, 158, 224, .2);
+        }
+
+        .module-arrow {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            background: rgba(74, 158, 224, .1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        /* ── FOOTER ── */
+        .footer {
+            margin-top: 36px;
+            text-align: center;
+            font-size: 11px;
+            color: rgba(139, 163, 188, .5);
+            letter-spacing: .3px;
+        }
+
+        /* ── ANIMATIONS ── */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero {
+            animation: fadeUp .5s ease both;
+        }
+
+        .stats-bar {
+            animation: fadeUp .5s .1s ease both;
+        }
+
+        .section-title {
+            animation: fadeUp .5s .15s ease both;
+        }
+
+        .module-card {
+            animation: fadeUp .5s ease both;
+        }
+
+        .module-card:nth-child(1) {
+            animation-delay: .2s;
+        }
+
+        .module-card:nth-child(2) {
+            animation-delay: .28s;
+        }
+
+        .module-card:nth-child(3) {
+            animation-delay: .36s;
+        }
+
+        .module-card:nth-child(4) {
+            animation-delay: .44s;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        .hero-illustration {
+            animation: float 4s ease-in-out infinite;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="bg-pattern"></div>
+    <div class="bg-grid"></div>
+
+    <div class="page">
+
+        <!-- HEADER -->
+        <header>
+            <div class="logo-mark">
+                <!-- Logo icon: placa-mãe estilizada -->
+                <svg class="logo-icon" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="36" height="36" rx="10" fill="#1E6FBF" />
+                    <rect x="7" y="7" width="22" height="22" rx="4" fill="#162840" stroke="#4A9EE0"
+                        stroke-width="1.2" />
+                    <rect x="12" y="12" width="12" height="12" rx="2" fill="#1E6FBF" />
+                    <rect x="14" y="14" width="8" height="8" rx="1" fill="#F7732A" />
+                    <!-- pinos -->
+                    <rect x="4" y="13" width="3" height="2" rx="1" fill="#4A9EE0" />
+                    <rect x="4" y="17" width="3" height="2" rx="1" fill="#4A9EE0" />
+                    <rect x="4" y="21" width="3" height="2" rx="1" fill="#4A9EE0" />
+                    <rect x="29" y="13" width="3" height="2" rx="1" fill="#4A9EE0" />
+                    <rect x="29" y="17" width="3" height="2" rx="1" fill="#4A9EE0" />
+                    <rect x="29" y="21" width="3" height="2" rx="1" fill="#4A9EE0" />
+                    <rect x="13" y="4" width="2" height="3" rx="1" fill="#4A9EE0" />
+                    <rect x="17" y="4" width="2" height="3" rx="1" fill="#4A9EE0" />
+                    <rect x="21" y="4" width="2" height="3" rx="1" fill="#4A9EE0" />
+                </svg>
+                <span class="logo-text">Tech<span>Quest</span></span>
+            </div>
+            <span class="badge-version">v1.0</span>
+        </header>
+
+        <!-- HERO -->
+        <section class="hero">
+
+            <!-- Ilustração hero: técnico + computador flat -->
+            <svg class="hero-illustration" width="260" height="200" viewBox="0 0 260 200" fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <!-- Mesa -->
+                <rect x="20" y="158" width="220" height="10" rx="5" fill="#1A3A5C" />
+                <rect x="50" y="168" width="12" height="24" rx="3" fill="#1A3A5C" />
+                <rect x="198" y="168" width="12" height="24" rx="3" fill="#1A3A5C" />
+
+                <!-- Monitor -->
+                <rect x="60" y="90" width="140" height="70" rx="8" fill="#162840" stroke="#1E6FBF" stroke-width="2" />
+                <rect x="66" y="96" width="128" height="58" rx="5" fill="#0D1B2A" />
+                <!-- tela conteúdo -->
+                <rect x="72" y="102" width="50" height="6" rx="3" fill="#4A9EE0" opacity=".7" />
+                <rect x="72" y="112" width="36" height="4" rx="2" fill="#4A9EE0" opacity=".4" />
+                <rect x="72" y="120" width="44" height="4" rx="2" fill="#4A9EE0" opacity=".3" />
+                <rect x="72" y="128" width="30" height="4" rx="2" fill="#F7732A" opacity=".6" />
+                <!-- janela verde -->
+                <rect x="132" y="102" width="56" height="46" rx="4" fill="#1A3A5C" stroke="#4A9EE0" stroke-width="1" />
+                <rect x="136" y="108" width="20" height="3" rx="1.5" fill="#4A9EE0" opacity=".8" />
+                <rect x="136" y="114" width="14" height="3" rx="1.5" fill="#4A9EE0" opacity=".5" />
+                <circle cx="155" cy="133" r="8" fill="#F7732A" opacity=".9" />
+                <path d="M151 133l3 3 6-6" stroke="#fff" stroke-width="1.5" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                <!-- suporte monitor -->
+                <rect x="122" y="160" width="16" height="8" rx="2" fill="#1A3A5C" />
+                <rect x="112" y="155" width="36" height="6" rx="3" fill="#1E6FBF" />
+
+                <!-- Gabinete -->
+                <rect x="20" y="100" width="32" height="55" rx="6" fill="#162840" stroke="#1E6FBF" stroke-width="1.5" />
+                <rect x="26" y="107" width="20" height="6" rx="3" fill="#1E6FBF" opacity=".6" />
+                <circle cx="36" cy="120" r="4" fill="#F7732A" />
+                <circle cx="36" cy="120" r="2" fill="#FFAD6F" />
+                <rect x="26" y="128" width="20" height="3" rx="1.5" fill="#4A9EE0" opacity=".3" />
+                <rect x="26" y="134" width="20" height="3" rx="1.5" fill="#4A9EE0" opacity=".3" />
+                <rect x="26" y="140" width="20" height="3" rx="1.5" fill="#4A9EE0" opacity=".2" />
+
+                <!-- Teclado -->
+                <rect x="75" y="162" width="90" height="14" rx="4" fill="#162840" stroke="#1A3A5C" stroke-width="1.5" />
+                <rect x="80" y="165" width="8" height="5" rx="1.5" fill="#1E6FBF" opacity=".5" />
+                <rect x="91" y="165" width="8" height="5" rx="1.5" fill="#1E6FBF" opacity=".5" />
+                <rect x="102" y="165" width="8" height="5" rx="1.5" fill="#1E6FBF" opacity=".5" />
+                <rect x="113" y="165" width="8" height="5" rx="1.5" fill="#1E6FBF" opacity=".5" />
+                <rect x="124" y="165" width="8" height="5" rx="1.5" fill="#1E6FBF" opacity=".5" />
+                <rect x="135" y="165" width="8" height="5" rx="1.5" fill="#1E6FBF" opacity=".5" />
+                <rect x="88" y="172" width="44" height="4" rx="2" fill="#1E6FBF" opacity=".4" />
+
+                <!-- Técnico (personagem flat) -->
+                <!-- corpo -->
+                <rect x="188" y="108" width="30" height="36" rx="8" fill="#1E6FBF" />
+                <!-- bolso -->
+                <rect x="192" y="115" width="10" height="8" rx="2" fill="#162840" />
+                <rect x="194" y="117" width="6" height="1.5" rx=".75" fill="#4A9EE0" />
+                <!-- braço direito apontando -->
+                <rect x="218" y="112" width="22" height="8" rx="4" fill="#1E6FBF" />
+                <circle cx="242" cy="116" r="5" fill="#FFAD6F" />
+                <!-- braço esquerdo -->
+                <rect x="180" y="112" width="8" height="20" rx="4" fill="#1E6FBF" />
+                <circle cx="184" cy="134" r="5" fill="#FFAD6F" />
+                <!-- pernas -->
+                <rect x="192" y="142" width="10" height="18" rx="5" fill="#0D1B2A" />
+                <rect x="206" y="142" width="10" height="18" rx="5" fill="#0D1B2A" />
+                <!-- sapatos -->
+                <rect x="189" y="156" width="14" height="6" rx="3" fill="#F7732A" />
+                <rect x="203" y="156" width="14" height="6" rx="3" fill="#F7732A" />
+                <!-- cabeça -->
+                <circle cx="203" cy="98" r="16" fill="#FFAD6F" />
+                <!-- cabelo -->
+                <path d="M187 94 Q190 82 203 82 Q216 82 219 94" fill="#0D1B2A" />
+                <!-- olhos -->
+                <circle cx="197" cy="97" r="2.5" fill="#0D1B2A" />
+                <circle cx="209" cy="97" r="2.5" fill="#0D1B2A" />
+                <circle cx="198" cy="96" r="1" fill="#fff" />
+                <circle cx="210" cy="96" r="1" fill="#fff" />
+                <!-- sorriso -->
+                <path d="M198 103 Q203 107 208 103" stroke="#0D1B2A" stroke-width="1.5" stroke-linecap="round"
+                    fill="none" />
+                <!-- capacete / headset -->
+                <path d="M187 92 Q187 78 203 78 Q219 78 219 92" stroke="#1E6FBF" stroke-width="3" fill="none" />
+                <rect x="184" y="90" width="6" height="8" rx="3" fill="#F7732A" />
+                <rect x="216" y="90" width="6" height="8" rx="3" fill="#F7732A" />
+
+                <!-- partículas flutuantes -->
+                <circle cx="170" cy="80" r="3" fill="#F7732A" opacity=".7" />
+                <circle cx="245" cy="75" r="2" fill="#4A9EE0" opacity=".6" />
+                <circle cx="155" cy="70" r="2" fill="#4A9EE0" opacity=".4" />
+                <rect x="240" y="95" width="6" height="6" rx="1" fill="#F7732A" opacity=".4"
+                    transform="rotate(20 243 98)" />
+                <rect x="162" y="95" width="5" height="5" rx="1" fill="#4A9EE0" opacity=".4"
+                    transform="rotate(-15 164 97)" />
+            </svg>
+
+            <p class="hero-eyebrow">Oficina de Montagem e Conexão</p>
+            <h1 class="hero-title">Aprenda fazendo,<br><em>errando e evoluindo</em></h1>
+            <p class="hero-desc">Simule montagens, diagnostique falhas e configure redes — tudo no seu celular, sem
+                precisar do laboratório.</p>
+
+            <a href="#modulos" class="btn-start">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                    <polygon points="6,3 15,9 6,15" fill="#fff" />
+                </svg>
+                Começar agora
+            </a>
+        </section>
+
+        <!-- STATS -->
+        <div class="stats-bar">
+            <div class="stat">
+                <div class="stat-value">4<span>+</span></div>
+                <div class="stat-label">Módulos</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">3<span>×</span></div>
+                <div class="stat-label">Tipos de atividade</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">100<span>%</span></div>
+                <div class="stat-label">No celular</div>
+            </div>
+        </div>
+
+        <!-- MODULES -->
+        <h2 class="section-title" id="modulos">Módulos</h2>
+
+        <div class="modules">
+
+            <!-- M1 -->
+            <a href="#" class="module-card">
+                <div class="module-icon mod-1">
+                    <!-- Ícone: chip / processador -->
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                        <rect x="8" y="8" width="16" height="16" rx="3" fill="#1E6FBF" />
+                        <rect x="11" y="11" width="10" height="10" rx="1.5" fill="#4A9EE0" />
+                        <rect x="13" y="13" width="6" height="6" rx="1" fill="#0D1B2A" />
+                        <rect x="5" y="12" width="3" height="2" rx="1" fill="#4A9EE0" />
+                        <rect x="5" y="16" width="3" height="2" rx="1" fill="#4A9EE0" />
+                        <rect x="5" y="20" width="3" height="2" rx="1" fill="#4A9EE0" />
+                        <rect x="24" y="12" width="3" height="2" rx="1" fill="#4A9EE0" />
+                        <rect x="24" y="16" width="3" height="2" rx="1" fill="#4A9EE0" />
+                        <rect x="24" y="20" width="3" height="2" rx="1" fill="#4A9EE0" />
+                        <rect x="12" y="5" width="2" height="3" rx="1" fill="#4A9EE0" />
+                        <rect x="16" y="5" width="2" height="3" rx="1" fill="#4A9EE0" />
+                        <rect x="20" y="5" width="2" height="3" rx="1" fill="#4A9EE0" />
+                        <rect x="12" y="24" width="2" height="3" rx="1" fill="#4A9EE0" />
+                        <rect x="16" y="24" width="2" height="3" rx="1" fill="#4A9EE0" />
+                        <rect x="20" y="24" width="2" height="3" rx="1" fill="#4A9EE0" />
+                    </svg>
+                </div>
+                <div class="module-info">
+                    <div class="module-number">Módulo 01</div>
+                    <div class="module-name">Identificação de Hardware</div>
+                    <div class="module-tags">
+                        <span class="tag">Quiz</span>
+                        <span class="tag">Simulação</span>
+                        <span class="tag">Arrastar</span>
+                    </div>
+                </div>
+                <div class="module-arrow">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <path d="M4 7h6M7 4l3 3-3 3" stroke="#4A9EE0" stroke-width="1.5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </div>
+            </a>
+
+            <!-- M2 -->
+            <a href="#" class="module-card">
+                <div class="module-icon mod-2">
+                    <!-- Ícone: cabo / conector -->
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                        <!-- gabinete simplificado -->
+                        <rect x="5" y="8" width="14" height="18" rx="3" fill="#F7732A" opacity=".8" />
+                        <rect x="8" y="11" width="8" height="4" rx="1.5" fill="#162840" />
+                        <circle cx="12" cy="19" r="2.5" fill="#FFAD6F" />
+                        <!-- cabo -->
+                        <path d="M19 14 Q26 14 26 19 Q26 24 22 24" stroke="#F7732A" stroke-width="2.5"
+                            stroke-linecap="round" fill="none" />
+                        <rect x="20" y="22" width="6" height="5" rx="1.5" fill="#F7732A" opacity=".7" />
+                    </svg>
+                </div>
+                <div class="module-info">
+                    <div class="module-number">Módulo 02</div>
+                    <div class="module-name">Montagem e Cabos</div>
+                    <div class="module-tags">
+                        <span class="tag">Sequência</span>
+                        <span class="tag">Caso prático</span>
+                    </div>
+                </div>
+                <div class="module-arrow">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <path d="M4 7h6M7 4l3 3-3 3" stroke="#4A9EE0" stroke-width="1.5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </div>
+            </a>
+
+            <!-- M3 -->
+            <a href="#" class="module-card">
+                <div class="module-icon mod-3">
+                    <!-- Ícone: lupa / diagnóstico -->
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                        <circle cx="13" cy="13" r="7" fill="none" stroke="#4A9EE0" stroke-width="2.5" />
+                        <circle cx="13" cy="13" r="3.5" fill="#4A9EE0" opacity=".3" />
+                        <line x1="18.5" y1="18.5" x2="25" y2="25" stroke="#4A9EE0" stroke-width="2.5"
+                            stroke-linecap="round" />
+                        <!-- x de erro -->
+                        <path d="M10 10l6 6M16 10l-6 6" stroke="#F7732A" stroke-width="1.5" stroke-linecap="round" />
+                    </svg>
+                </div>
+                <div class="module-info">
+                    <div class="module-number">Módulo 03</div>
+                    <div class="module-name">Diagnóstico de Falhas</div>
+                    <div class="module-tags">
+                        <span class="tag">Caso clínico</span>
+                        <span class="tag">Decisão</span>
+                    </div>
+                </div>
+                <div class="module-arrow">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <path d="M4 7h6M7 4l3 3-3 3" stroke="#4A9EE0" stroke-width="1.5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </div>
+            </a>
+
+            <!-- M4 -->
+            <a href="#" class="module-card">
+                <div class="module-icon mod-4">
+                    <!-- Ícone: rede / topologia -->
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                        <!-- roteador central -->
+                        <rect x="12" y="13" width="8" height="6" rx="2" fill="#1AB078" />
+                        <!-- nós -->
+                        <circle cx="7" cy="8" r="3.5" fill="#1AB078" opacity=".7" />
+                        <circle cx="25" cy="8" r="3.5" fill="#1AB078" opacity=".7" />
+                        <circle cx="16" cy="26" r="3.5" fill="#1AB078" opacity=".7" />
+                        <!-- linhas -->
+                        <line x1="10" y1="10" x2="13" y2="14" stroke="#1AB078" stroke-width="1.5"
+                            stroke-dasharray="2 2" />
+                        <line x1="22" y1="10" x2="19" y2="14" stroke="#1AB078" stroke-width="1.5"
+                            stroke-dasharray="2 2" />
+                        <line x1="16" y1="19" x2="16" y2="22" stroke="#1AB078" stroke-width="1.5"
+                            stroke-dasharray="2 2" />
+                    </svg>
+                </div>
+                <div class="module-info">
+                    <div class="module-number">Módulo 04</div>
+                    <div class="module-name">Conexão e Rede</div>
+                    <div class="module-tags">
+                        <span class="tag">Topologia</span>
+                        <span class="tag">Configuração</span>
+                    </div>
+                </div>
+                <div class="module-arrow">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <path d="M4 7h6M7 4l3 3-3 3" stroke="#4A9EE0" stroke-width="1.5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </div>
+            </a>
+
+        </div><!-- /modules -->
+
+        <footer class="footer">
+            TechQuest — Oficina Virtual
+        </footer>
+
+    </div><!-- /page -->
+</body>
+
+</html>
