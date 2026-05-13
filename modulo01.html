@@ -1,0 +1,1496 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechQuest — Módulo 1: Hardware</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --blue-dark: #0D1B2A;
+            --blue-mid: #1A3A5C;
+            --blue: #1E6FBF;
+            --blue-light: #4A9EE0;
+            --orange: #F7732A;
+            --orange-light: #FFAD6F;
+            --white: #F4F8FF;
+            --gray: #8BA3BC;
+            --card-bg: #162840;
+            --green: #1AB078;
+            --red: #E8445A;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: var(--blue-dark);
+            color: var(--white);
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .bg-pattern {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background-image:
+                radial-gradient(circle at 80% 10%, rgba(30, 111, 191, .25) 0%, transparent 50%),
+                radial-gradient(circle at 10% 80%, rgba(247, 115, 42, .12) 0%, transparent 45%);
+        }
+
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background-image:
+                linear-gradient(rgba(74, 158, 224, .06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(74, 158, 224, .06) 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
+
+        .page {
+            position: relative;
+            z-index: 1;
+            max-width: 430px;
+            margin: 0 auto;
+            padding: 0 20px 48px;
+        }
+
+        /* ── TOPBAR ── */
+        .topbar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 0 12px;
+        }
+
+        .btn-back {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: var(--card-bg);
+            border: 1px solid rgba(74, 158, 224, .15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: background .15s;
+        }
+
+        .btn-back:active {
+            background: var(--blue-mid);
+        }
+
+        .topbar-info {
+            flex: 1;
+        }
+
+        .topbar-label {
+            font-size: 11px;
+            color: var(--gray);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .topbar-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .topbar-badge {
+            font-size: 11px;
+            font-weight: 600;
+            background: rgba(30, 111, 191, .2);
+            color: var(--blue-light);
+            border: 1px solid rgba(74, 158, 224, .25);
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        /* ── PROGRESS BAR ── */
+        .progress-wrap {
+            margin-bottom: 20px;
+        }
+
+        .progress-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--gray);
+            margin-bottom: 7px;
+        }
+
+        .progress-meta strong {
+            color: var(--white);
+        }
+
+        .progress-track {
+            height: 6px;
+            background: var(--card-bg);
+            border-radius: 99px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--blue), var(--blue-light));
+            border-radius: 99px;
+            transition: width .4s cubic-bezier(.4, 0, .2, 1);
+        }
+
+        /* ══════════════════════════════════
+     TELA 1 — INTRO
+  ══════════════════════════════════ */
+        #screen-intro {
+            display: block;
+        }
+
+        #screen-quiz {
+            display: none;
+        }
+
+        #screen-result {
+            display: none;
+        }
+
+        .intro-hero {
+            text-align: center;
+            padding: 10px 0 24px;
+        }
+
+        .intro-hero svg {
+            margin-bottom: 20px;
+        }
+
+        .intro-eyebrow {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: var(--orange);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .intro-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 26px;
+            font-weight: 800;
+            line-height: 1.15;
+            margin-bottom: 12px;
+        }
+
+        .intro-title em {
+            color: var(--blue-light);
+            font-style: normal;
+        }
+
+        .intro-desc {
+            font-size: 14px;
+            color: var(--gray);
+            line-height: 1.65;
+            max-width: 320px;
+            margin: 0 auto;
+        }
+
+        .intro-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 24px 0;
+        }
+
+        .intro-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(74, 158, 224, .12);
+            border-radius: 14px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .intro-card-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: rgba(30, 111, 191, .18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .intro-card-text strong {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .intro-card-text span {
+            font-size: 12px;
+            color: var(--gray);
+            line-height: 1.5;
+        }
+
+        .btn-primary {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            background: var(--orange);
+            color: #fff;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            padding: 15px;
+            border-radius: 14px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(247, 115, 42, .35);
+            transition: transform .15s, box-shadow .15s;
+        }
+
+        .btn-primary:active {
+            transform: scale(.98);
+            box-shadow: 0 4px 12px rgba(247, 115, 42, .25);
+        }
+
+        /* ══════════════════════════════════
+     TELA 2 — QUIZ
+  ══════════════════════════════════ */
+        .question-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(74, 158, 224, .12);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .question-chip {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            color: var(--orange);
+            text-transform: uppercase;
+            background: rgba(247, 115, 42, .1);
+            border: 1px solid rgba(247, 115, 42, .2);
+            padding: 3px 10px;
+            border-radius: 99px;
+            margin-bottom: 14px;
+        }
+
+        .question-illustration {
+            display: flex;
+            justify-content: center;
+            background: rgba(13, 27, 42, .6);
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .question-text {
+            font-family: 'Syne', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1.35;
+            margin-bottom: 4px;
+        }
+
+        .question-hint {
+            font-size: 12px;
+            color: var(--gray);
+            margin-bottom: 4px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .option {
+            background: rgba(26, 58, 92, .4);
+            border: 1.5px solid rgba(74, 158, 224, .15);
+            border-radius: 13px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: border-color .15s, background .15s, transform .1s;
+            user-select: none;
+        }
+
+        .option:active {
+            transform: scale(.99);
+        }
+
+        .option.hover-state {
+            border-color: rgba(74, 158, 224, .4);
+            background: rgba(30, 111, 191, .15);
+        }
+
+        .option.correct {
+            border-color: var(--green);
+            background: rgba(26, 176, 120, .12);
+            animation: pulse-green .3s ease;
+        }
+
+        .option.wrong {
+            border-color: var(--red);
+            background: rgba(232, 68, 90, .1);
+            animation: shake .3s ease;
+        }
+
+        .option.disabled {
+            pointer-events: none;
+            opacity: .5;
+        }
+
+        .option.correct.disabled {
+            opacity: 1;
+        }
+
+        .option.wrong.disabled {
+            opacity: 1;
+        }
+
+        .option-letter {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            flex-shrink: 0;
+            background: rgba(74, 158, 224, .1);
+            border: 1px solid rgba(74, 158, 224, .2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Syne', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--blue-light);
+            transition: background .15s, color .15s;
+        }
+
+        .option.correct .option-letter {
+            background: var(--green);
+            color: #fff;
+            border-color: var(--green);
+        }
+
+        .option.wrong .option-letter {
+            background: var(--red);
+            color: #fff;
+            border-color: var(--red);
+        }
+
+        .option-text {
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 1.35;
+        }
+
+        /* ── FEEDBACK BOX ── */
+        .feedback-box {
+            border-radius: 14px;
+            padding: 14px 16px;
+            margin-top: 14px;
+            display: none;
+            animation: fadeUp .3s ease both;
+        }
+
+        .feedback-box.correct {
+            background: rgba(26, 176, 120, .12);
+            border: 1px solid rgba(26, 176, 120, .3);
+        }
+
+        .feedback-box.wrong {
+            background: rgba(232, 68, 90, .1);
+            border: 1px solid rgba(232, 68, 90, .3);
+        }
+
+        .feedback-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .feedback-header strong {
+            font-family: 'Syne', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .feedback-box.correct .feedback-header strong {
+            color: var(--green);
+        }
+
+        .feedback-box.wrong .feedback-header strong {
+            color: var(--red);
+        }
+
+        .feedback-text {
+            font-size: 13px;
+            color: var(--gray);
+            line-height: 1.6;
+        }
+
+        .btn-next {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            background: var(--blue);
+            color: #fff;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 14px;
+            border-radius: 13px;
+            border: none;
+            cursor: pointer;
+            margin-top: 14px;
+            display: none;
+            transition: transform .15s, background .15s;
+        }
+
+        .btn-next:active {
+            transform: scale(.98);
+        }
+
+        .btn-next.show {
+            display: flex;
+            animation: fadeUp .3s ease both;
+        }
+
+        /* ══════════════════════════════════
+     TELA 3 — RESULTADO
+  ══════════════════════════════════ */
+        .result-hero {
+            text-align: center;
+            padding: 20px 0 28px;
+        }
+
+        .result-score-ring {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            margin: 0 auto 24px;
+        }
+
+        .result-score-ring svg {
+            position: absolute;
+            inset: 0;
+            transform: rotate(-90deg);
+        }
+
+        .result-score-inner {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .result-score-num {
+            font-family: 'Syne', sans-serif;
+            font-size: 36px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .result-score-label {
+            font-size: 11px;
+            color: var(--gray);
+            margin-top: 2px;
+        }
+
+        .result-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .result-subtitle {
+            font-size: 14px;
+            color: var(--gray);
+            line-height: 1.6;
+            max-width: 280px;
+            margin: 0 auto;
+        }
+
+        .result-breakdown {
+            background: var(--card-bg);
+            border: 1px solid rgba(74, 158, 224, .12);
+            border-radius: 16px;
+            padding: 16px;
+            margin: 24px 0;
+        }
+
+        .breakdown-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .breakdown-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(74, 158, 224, .06);
+        }
+
+        .breakdown-row:last-child {
+            border-bottom: none;
+        }
+
+        .breakdown-q {
+            font-size: 13px;
+            color: var(--gray);
+            flex: 1;
+            padding-right: 8px;
+        }
+
+        .breakdown-badge {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 99px;
+        }
+
+        .breakdown-badge.ok {
+            background: rgba(26, 176, 120, .15);
+            color: var(--green);
+        }
+
+        .breakdown-badge.err {
+            background: rgba(232, 68, 90, .12);
+            color: var(--red);
+        }
+
+        .result-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-secondary {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            background: var(--card-bg);
+            color: var(--white);
+            border: 1.5px solid rgba(74, 158, 224, .2);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 14px;
+            border-radius: 13px;
+            cursor: pointer;
+            transition: border-color .15s, background .15s;
+        }
+
+        .btn-secondary:active {
+            background: var(--blue-mid);
+        }
+
+        /* ── ANIMATIONS ── */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(14px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse-green {
+            0% {
+                box-shadow: 0 0 0 0 rgba(26, 176, 120, .5);
+            }
+
+            70% {
+                box-shadow: 0 0 0 8px rgba(26, 176, 120, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(26, 176, 120, 0);
+            }
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-6px);
+            }
+
+            75% {
+                transform: translateX(6px);
+            }
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-6px);
+            }
+        }
+
+        .intro-hero svg {
+            animation: float 4s ease-in-out infinite;
+        }
+
+        #screen-intro {
+            animation: fadeUp .4s ease both;
+        }
+
+        #screen-quiz {
+            animation: fadeUp .4s ease both;
+        }
+
+        #screen-result {
+            animation: fadeUp .4s ease both;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-pattern"></div>
+    <div class="bg-grid"></div>
+
+    <div class="page">
+
+        <!-- TOPBAR (sempre visível) -->
+        <div class="topbar">
+            <div class="btn-back" onclick="goBack()">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                    <path d="M11 4l-5 5 5 5" stroke="#4A9EE0" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+            </div>
+            <div class="topbar-info">
+                <div class="topbar-label">Módulo 01</div>
+                <div class="topbar-title">Identificação de Hardware</div>
+            </div>
+            <div class="topbar-badge" id="badge-progress">0/10</div>
+        </div>
+
+        <!-- PROGRESS BAR -->
+        <div class="progress-wrap" id="progress-wrap" style="display:none">
+            <div class="progress-meta">
+                <span>Questão <strong id="q-current">1</strong> de <strong>10</strong></span>
+                <span id="q-score-label">✓ 0 &nbsp; ✗ 0</span>
+            </div>
+            <div class="progress-track">
+                <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+            </div>
+        </div>
+
+        <!-- ══════════ TELA INTRO ══════════ -->
+        <div id="screen-intro">
+
+            <div class="intro-hero">
+                <!-- Ilustração: bancada com componentes flat -->
+                <svg width="260" height="180" viewBox="0 0 260 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Mesa -->
+                    <rect x="10" y="148" width="240" height="10" rx="5" fill="#1A3A5C" />
+                    <rect x="30" y="158" width="10" height="18" rx="3" fill="#1A3A5C" />
+                    <rect x="220" y="158" width="10" height="18" rx="3" fill="#1A3A5C" />
+
+                    <!-- Placa-mãe -->
+                    <rect x="30" y="80" width="110" height="68" rx="6" fill="#162840" stroke="#1E6FBF"
+                        stroke-width="1.5" />
+                    <!-- trilhas -->
+                    <line x1="45" y1="80" x2="45" y2="148" stroke="#1E6FBF" stroke-width=".6" opacity=".3" />
+                    <line x1="65" y1="80" x2="65" y2="148" stroke="#1E6FBF" stroke-width=".6" opacity=".3" />
+                    <line x1="30" y1="100" x2="140" y2="100" stroke="#1E6FBF" stroke-width=".6" opacity=".3" />
+                    <line x1="30" y1="120" x2="140" y2="120" stroke="#1E6FBF" stroke-width=".6" opacity=".3" />
+                    <!-- slots RAM -->
+                    <rect x="38" y="85" width="6" height="28" rx="2" fill="#1E6FBF" opacity=".8" />
+                    <rect x="48" y="85" width="6" height="28" rx="2" fill="#1E6FBF" opacity=".5" />
+                    <!-- socket CPU -->
+                    <rect x="65" y="88" width="30" height="30" rx="4" fill="#0D1B2A" stroke="#4A9EE0"
+                        stroke-width="1.2" />
+                    <rect x="70" y="93" width="20" height="20" rx="2" fill="#F7732A" opacity=".9" />
+                    <rect x="73" y="96" width="14" height="14" rx="1" fill="#0D1B2A" />
+                    <text x="76" y="107" font-size="7" fill="#F7732A" font-family="DM Sans">CPU</text>
+                    <!-- conector 24-pin -->
+                    <rect x="105" y="86" width="8" height="20" rx="2" fill="#4A9EE0" opacity=".6" />
+                    <rect x="106" y="88" width="2" height="3" rx="1" fill="#0D1B2A" />
+                    <rect x="106" y="93" width="2" height="3" rx="1" fill="#0D1B2A" />
+                    <rect x="106" y="98" width="2" height="3" rx="1" fill="#0D1B2A" />
+                    <rect x="110" y="88" width="2" height="3" rx="1" fill="#0D1B2A" />
+                    <rect x="110" y="93" width="2" height="3" rx="1" fill="#0D1B2A" />
+                    <!-- slot PCIe -->
+                    <rect x="38" y="122" width="90" height="8" rx="2" fill="#1E6FBF" opacity=".5" />
+                    <rect x="38" y="135" width="70" height="6" rx="2" fill="#1E6FBF" opacity=".3" />
+                    <!-- pinos laterais -->
+                    <rect x="27" y="88" width="3" height="2" rx="1" fill="#4A9EE0" />
+                    <rect x="27" y="93" width="3" height="2" rx="1" fill="#4A9EE0" />
+                    <rect x="27" y="98" width="3" height="2" rx="1" fill="#4A9EE0" />
+                    <rect x="27" y="103" width="3" height="2" rx="1" fill="#4A9EE0" />
+
+                    <!-- RAM (fora da placa, label) -->
+                    <rect x="155" y="90" width="12" height="46" rx="3" fill="#4A9EE0" />
+                    <rect x="157" y="94" width="8" height="4" rx="1" fill="#0D1B2A" />
+                    <rect x="157" y="100" width="8" height="2" rx="1" fill="#0D1B2A" />
+                    <rect x="157" y="104" width="8" height="2" rx="1" fill="#0D1B2A" />
+                    <rect x="157" y="108" width="8" height="2" rx="1" fill="#0D1B2A" />
+                    <text x="150" y="145" font-size="9" fill="#4A9EE0" font-family="DM Sans"
+                        font-weight="600">RAM</text>
+
+                    <!-- SSD M.2 -->
+                    <rect x="180" y="105" width="50" height="14" rx="3" fill="#162840" stroke="#F7732A"
+                        stroke-width="1.2" />
+                    <rect x="184" y="108" width="8" height="8" rx="1.5" fill="#F7732A" opacity=".7" />
+                    <rect x="196" y="108" width="6" height="8" rx="1" fill="#F7732A" opacity=".4" />
+                    <rect x="206" y="108" width="6" height="8" rx="1" fill="#F7732A" opacity=".4" />
+                    <rect x="216" y="108" width="6" height="8" rx="1" fill="#F7732A" opacity=".4" />
+                    <text x="183" y="130" font-size="9" fill="#F7732A" font-family="DM Sans" font-weight="600">SSD
+                        M.2</text>
+
+                    <!-- Cooler -->
+                    <circle cx="215" cy="72" r="18" fill="#162840" stroke="#4A9EE0" stroke-width="1.2" />
+                    <circle cx="215" cy="72" r="8" fill="#1E6FBF" />
+                    <circle cx="215" cy="72" r="3" fill="#4A9EE0" />
+                    <!-- pás cooler -->
+                    <path d="M215 72 Q220 60 215 54" stroke="#4A9EE0" stroke-width="2" stroke-linecap="round"
+                        fill="none" />
+                    <path d="M215 72 Q227 72 233 68" stroke="#4A9EE0" stroke-width="2" stroke-linecap="round"
+                        fill="none" />
+                    <path d="M215 72 Q210 84 215 90" stroke="#4A9EE0" stroke-width="2" stroke-linecap="round"
+                        fill="none" />
+                    <path d="M215 72 Q203 72 197 76" stroke="#4A9EE0" stroke-width="2" stroke-linecap="round"
+                        fill="none" />
+                    <text x="206" y="98" font-size="9" fill="#4A9EE0" font-family="DM Sans"
+                        font-weight="600">Cooler</text>
+
+                    <!-- GPU pequena -->
+                    <rect x="155" y="55" width="30" height="18" rx="3" fill="#162840" stroke="#F7732A"
+                        stroke-width="1" />
+                    <rect x="158" y="58" width="10" height="12" rx="2" fill="#F7732A" opacity=".7" />
+                    <circle cx="174" cy="64" r="4" fill="#F7732A" opacity=".5" />
+                    <circle cx="174" cy="64" r="2" fill="#F7732A" opacity=".8" />
+                    <text x="153" y="83" font-size="9" fill="#F7732A" font-family="DM Sans" font-weight="600">GPU</text>
+
+                    <!-- partículas -->
+                    <circle cx="25" cy="60" r="3" fill="#F7732A" opacity=".5" />
+                    <circle cx="248" cy="55" r="2" fill="#4A9EE0" opacity=".5" />
+                    <circle cx="15" cy="130" r="2" fill="#4A9EE0" opacity=".3" />
+                </svg>
+
+                <p class="intro-eyebrow">Módulo 01 · Identificação</p>
+                <h1 class="intro-title">Conhece cada<br><em>peça do computador?</em></h1>
+                <p class="intro-desc">Vamos testar se você sabe reconhecer e entender a função dos principais
+                    componentes de hardware.</p>
+            </div>
+
+            <div class="intro-cards">
+                <div class="intro-card">
+                    <div class="intro-card-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="9" stroke="#4A9EE0" stroke-width="2" />
+                            <text x="8" y="17" font-size="12" fill="#4A9EE0" font-weight="700"
+                                font-family="DM Sans">10</text>
+                        </svg>
+                    </div>
+                    <div class="intro-card-text">
+                        <strong>10 questões</strong>
+                        <span>Cada questão mostra a imagem de um componente para você identificar.</span>
+                    </div>
+                </div>
+                <div class="intro-card">
+                    <div class="intro-card-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z" fill="#F7732A"
+                                opacity=".8" />
+                        </svg>
+                    </div>
+                    <div class="intro-card-text">
+                        <strong>Feedback imediato</strong>
+                        <span>Se errar, você vê a resposta certa e uma explicação simples do porquê.</span>
+                    </div>
+                </div>
+                <div class="intro-card">
+                    <div class="intro-card-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M20 6L9 17l-5-5" stroke="#1AB078" stroke-width="2.5" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                    <div class="intro-card-text">
+                        <strong>Sem tempo limite</strong>
+                        <span>Responda no seu ritmo. O importante é aprender!</span>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-primary" onclick="startQuiz()">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                    <polygon points="5,3 15,9 5,15" fill="#fff" />
+                </svg>
+                Iniciar Quiz
+            </button>
+        </div><!-- /screen-intro -->
+
+
+        <!-- ══════════ TELA QUIZ ══════════ -->
+        <div id="screen-quiz">
+
+            <div class="question-card">
+                <div class="question-chip" id="q-chip">Identifique o componente</div>
+                <div class="question-illustration" id="q-illustration">
+                    <!-- SVG dinâmico via JS -->
+                </div>
+                <div class="question-text" id="q-text"></div>
+                <div class="question-hint" id="q-hint"></div>
+            </div>
+
+            <div class="options" id="options-list"></div>
+
+            <div class="feedback-box" id="feedback-box">
+                <div class="feedback-header">
+                    <span id="feedback-icon"></span>
+                    <strong id="feedback-title"></strong>
+                </div>
+                <p class="feedback-text" id="feedback-text"></p>
+            </div>
+
+            <button class="btn-next" id="btn-next" onclick="nextQuestion()">
+                Próxima questão
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M4 8h8M9 5l3 3-3 3" stroke="#fff" stroke-width="1.8" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+            </button>
+
+        </div><!-- /screen-quiz -->
+
+
+        <!-- ══════════ TELA RESULTADO ══════════ -->
+        <div id="screen-result">
+            <div class="result-hero">
+
+                <div class="result-score-ring">
+                    <svg width="140" height="140" viewBox="0 0 140 140">
+                        <!-- trilha fundo -->
+                        <circle cx="70" cy="70" r="58" stroke="#162840" stroke-width="12" fill="none" />
+                        <!-- arco de progresso -->
+                        <circle cx="70" cy="70" r="58" id="score-arc" stroke="#F7732A" stroke-width="12" fill="none"
+                            stroke-linecap="round" stroke-dasharray="364" stroke-dashoffset="364" />
+                    </svg>
+                    <div class="result-score-inner">
+                        <div class="result-score-num" id="result-num">0</div>
+                        <div class="result-score-label">de 10 acertos</div>
+                    </div>
+                </div>
+
+                <h2 class="result-title" id="result-title"></h2>
+                <p class="result-subtitle" id="result-subtitle"></p>
+            </div>
+
+            <div class="result-breakdown">
+                <div class="breakdown-title">Resumo das questões</div>
+                <div id="breakdown-list"></div>
+            </div>
+
+            <div class="result-actions">
+                <button class="btn-primary" onclick="restartQuiz()">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M3 8a5 5 0 1 1 1.5 3.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" />
+                        <path d="M3 5v3h3" stroke="#fff" stroke-width="1.8" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                    Tentar novamente
+                </button>
+                <button class="btn-secondary" onclick="goHome()">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M2 6.5L8 2l6 4.5V14H10v-4H6v4H2z" stroke="#4A9EE0" stroke-width="1.6"
+                            stroke-linejoin="round" fill="none" />
+                    </svg>
+                    Voltar ao início
+                </button>
+            </div>
+        </div><!-- /screen-result -->
+
+    </div><!-- /page -->
+
+    <script>
+        // ═══════════════════════════════════════
+        // BANCO DE QUESTÕES — Módulo 1
+        // ═══════════════════════════════════════
+        const questions = [
+            {
+                chip: "Identifique o componente",
+                text: "Qual é o nome deste componente?",
+                hint: "Ele é instalado diretamente no socket da placa-mãe.",
+                illustration: `<svg width="160" height="120" viewBox="0 0 160 120" fill="none">
+      <rect x="30" y="20" width="100" height="80" rx="6" fill="#162840" stroke="#F7732A" stroke-width="2"/>
+      <rect x="40" y="30" width="80" height="60" rx="4" fill="#0D1B2A"/>
+      <rect x="50" y="40" width="60" height="40" rx="3" fill="#F7732A" opacity=".9"/>
+      <rect x="55" y="45" width="50" height="30" rx="2" fill="#0D1B2A"/>
+      <text x="65" y="65" font-size="11" fill="#F7732A" font-family="DM Sans" font-weight="700">CPU</text>
+      <!-- pinos -->
+      <rect x="27" y="35" width="3" height="2" rx="1" fill="#4A9EE0"/>
+      <rect x="27" y="40" width="3" height="2" rx="1" fill="#4A9EE0"/>
+      <rect x="27" y="45" width="3" height="2" rx="1" fill="#4A9EE0"/>
+      <rect x="27" y="50" width="3" height="2" rx="1" fill="#4A9EE0"/>
+      <rect x="27" y="55" width="3" height="2" rx="1" fill="#4A9EE0"/>
+      <rect x="130" y="35" width="3" height="2" rx="1" fill="#4A9EE0"/>
+      <rect x="130" y="40" width="3" height="2" rx="1" fill="#4A9EE0"/>
+      <rect x="130" y="45" width="3" height="2" rx="1" fill="#4A9EE0"/>
+      <rect x="130" y="50" width="3" height="2" rx="1" fill="#4A9EE0"/>
+      <rect x="130" y="55" width="3" height="2" rx="1" fill="#4A9EE0"/>
+      <rect x="40" y="17" width="2" height="3" rx="1" fill="#4A9EE0"/>
+      <rect x="50" y="17" width="2" height="3" rx="1" fill="#4A9EE0"/>
+      <rect x="60" y="17" width="2" height="3" rx="1" fill="#4A9EE0"/>
+      <rect x="70" y="17" width="2" height="3" rx="1" fill="#4A9EE0"/>
+      <rect x="80" y="17" width="2" height="3" rx="1" fill="#4A9EE0"/>
+      <rect x="90" y="17" width="2" height="3" rx="1" fill="#4A9EE0"/>
+      <rect x="100" y="17" width="2" height="3" rx="1" fill="#4A9EE0"/>
+      <rect x="110" y="17" width="2" height="3" rx="1" fill="#4A9EE0"/>
+    </svg>`,
+                options: ["Processador (CPU)", "Memória RAM", "Placa de vídeo", "Chipset"],
+                correct: 0,
+                feedback: {
+                    correct: "Isso mesmo! O processador (CPU) é o cérebro do computador. Ele realiza todos os cálculos e executa os programas.",
+                    wrong: "A resposta certa é Processador (CPU). Ele é instalado no socket da placa-mãe e é responsável por processar todas as instruções do sistema."
+                }
+            },
+            {
+                chip: "Identifique o componente",
+                text: "O que é este componente comprido e fino?",
+                hint: "Costuma vir em pares para melhor desempenho.",
+                illustration: `<svg width="160" height="120" viewBox="0 0 160 120" fill="none">
+      <rect x="30" y="30" width="100" height="60" rx="4" fill="#4A9EE0"/>
+      <rect x="35" y="35" width="90" height="50" rx="3" fill="#0D1B2A"/>
+      <!-- chips na memória -->
+      <rect x="42" y="42" width="14" height="10" rx="2" fill="#4A9EE0" opacity=".8"/>
+      <rect x="62" y="42" width="14" height="10" rx="2" fill="#4A9EE0" opacity=".8"/>
+      <rect x="82" y="42" width="14" height="10" rx="2" fill="#4A9EE0" opacity=".8"/>
+      <rect x="102" y="42" width="14" height="10" rx="2" fill="#4A9EE0" opacity=".8"/>
+      <rect x="42" y="58" width="14" height="10" rx="2" fill="#4A9EE0" opacity=".5"/>
+      <rect x="62" y="58" width="14" height="10" rx="2" fill="#4A9EE0" opacity=".5"/>
+      <rect x="82" y="58" width="14" height="10" rx="2" fill="#4A9EE0" opacity=".5"/>
+      <rect x="102" y="58" width="14" height="10" rx="2" fill="#4A9EE0" opacity=".5"/>
+      <!-- encaixe -->
+      <rect x="68" y="88" width="8" height="4" rx="1" fill="#162840"/>
+      <!-- pinos -->
+      <rect x="35" y="90" width="2" height="4" rx="1" fill="#4A9EE0" opacity=".7"/>
+      <rect x="40" y="90" width="2" height="4" rx="1" fill="#4A9EE0" opacity=".7"/>
+      <rect x="45" y="90" width="2" height="4" rx="1" fill="#4A9EE0" opacity=".7"/>
+      <rect x="50" y="90" width="2" height="4" rx="1" fill="#4A9EE0" opacity=".7"/>
+      <rect x="55" y="90" width="2" height="4" rx="1" fill="#4A9EE0" opacity=".7"/>
+      <rect x="75" y="90" width="2" height="4" rx="1" fill="#4A9EE0" opacity=".7"/>
+      <rect x="80" y="90" width="2" height="4" rx="1" fill="#4A9EE0" opacity=".7"/>
+      <rect x="85" y="90" width="2" height="4" rx="1" fill="#4A9EE0" opacity=".7"/>
+      <rect x="90" y="90" width="2" height="4" rx="1" fill="#4A9EE0" opacity=".7"/>
+      <rect x="95" y="90" width="2" height="4" rx="1" fill="#4A9EE0" opacity=".7"/>
+    </svg>`,
+                options: ["Memória RAM", "SSD M.2", "Placa de rede", "Processador (CPU)"],
+                correct: 0,
+                feedback: {
+                    correct: "Correto! A memória RAM guarda temporariamente os dados dos programas que estão abertos. Quanto mais RAM, mais programas você pode usar ao mesmo tempo.",
+                    wrong: "A resposta certa é Memória RAM. Ela é aquele módulo comprido e fino com vários chips. Guarda dados temporários enquanto o computador está ligado."
+                }
+            },
+            {
+                chip: "Identifique o componente",
+                text: "Qual é este componente responsável por armazenar seus arquivos permanentemente?",
+                hint: "É um dos tipos mais modernos de armazenamento — bem pequeno e rápido.",
+                illustration: `<svg width="160" height="120" viewBox="0 0 160 120" fill="none">
+      <rect x="20" y="45" width="120" height="30" rx="5" fill="#162840" stroke="#F7732A" stroke-width="1.5"/>
+      <!-- chips -->
+      <rect x="28" y="52" width="18" height="16" rx="3" fill="#F7732A" opacity=".85"/>
+      <rect x="52" y="52" width="14" height="16" rx="2" fill="#F7732A" opacity=".5"/>
+      <rect x="72" y="52" width="14" height="16" rx="2" fill="#F7732A" opacity=".5"/>
+      <rect x="92" y="52" width="14" height="16" rx="2" fill="#F7732A" opacity=".5"/>
+      <rect x="112" y="52" width="14" height="16" rx="2" fill="#F7732A" opacity=".5"/>
+      <!-- pinos dourados -->
+      <rect x="20" y="72" width="6" height="3" rx="1" fill="#FFAD6F"/>
+      <rect x="28" y="72" width="6" height="3" rx="1" fill="#FFAD6F"/>
+      <rect x="36" y="72" width="6" height="3" rx="1" fill="#FFAD6F"/>
+      <rect x="44" y="72" width="6" height="3" rx="1" fill="#FFAD6F"/>
+      <rect x="52" y="72" width="6" height="3" rx="1" fill="#FFAD6F"/>
+      <rect x="60" y="72" width="6" height="3" rx="1" fill="#FFAD6F"/>
+      <!-- label -->
+      <text x="28" y="43" font-size="10" fill="#F7732A" font-family="DM Sans" font-weight="600">SSD M.2 NVMe</text>
+    </svg>`,
+                options: ["SSD M.2", "Memória RAM", "BIOS", "Placa de som"],
+                correct: 0,
+                feedback: {
+                    correct: "Isso! O SSD M.2 é um tipo de armazenamento muito rápido e compacto. Ele guarda o sistema operacional e seus arquivos mesmo quando o computador está desligado.",
+                    wrong: "A resposta certa é SSD M.2. É aquele palito pequeno que se encaixa diretamente na placa-mãe. Muito mais rápido que um HD tradicional."
+                }
+            },
+            {
+                chip: "Identifique o componente",
+                text: "Este componente é o maior e mais importante do gabinete. O que é ele?",
+                hint: "Todos os outros componentes se conectam a ele.",
+                illustration: `<svg width="160" height="120" viewBox="0 0 160 120" fill="none">
+      <rect x="10" y="10" width="140" height="100" rx="8" fill="#162840" stroke="#1E6FBF" stroke-width="1.5"/>
+      <!-- trilhas horizontais -->
+      <line x1="10" y1="35" x2="150" y2="35" stroke="#1E6FBF" stroke-width=".5" opacity=".3"/>
+      <line x1="10" y1="60" x2="150" y2="60" stroke="#1E6FBF" stroke-width=".5" opacity=".3"/>
+      <line x1="10" y1="85" x2="150" y2="85" stroke="#1E6FBF" stroke-width=".5" opacity=".3"/>
+      <!-- socket CPU -->
+      <rect x="20" y="18" width="35" height="35" rx="4" fill="#0D1B2A" stroke="#F7732A" stroke-width="1.2"/>
+      <rect x="25" y="23" width="25" height="25" rx="2" fill="#F7732A" opacity=".7"/>
+      <text x="28" y="39" font-size="8" fill="#0D1B2A" font-family="DM Sans" font-weight="700">Socket</text>
+      <!-- slots RAM -->
+      <rect x="65" y="18" width="7" height="35" rx="2" fill="#4A9EE0" opacity=".7"/>
+      <rect x="76" y="18" width="7" height="35" rx="2" fill="#4A9EE0" opacity=".4"/>
+      <rect x="87" y="18" width="7" height="35" rx="2" fill="#4A9EE0" opacity=".4"/>
+      <!-- PCIe slots -->
+      <rect x="20" y="65" width="110" height="8" rx="2" fill="#1E6FBF" opacity=".7"/>
+      <rect x="20" y="80" width="85" height="6" rx="2" fill="#1E6FBF" opacity=".4"/>
+      <!-- chip BIOS -->
+      <rect x="110" y="18" width="16" height="12" rx="2" fill="#4A9EE0" opacity=".8"/>
+      <text x="111" y="28" font-size="6" fill="#0D1B2A" font-family="DM Sans" font-weight="700">BIOS</text>
+      <!-- pinos laterais -->
+      <rect x="7" y="40" width="3" height="2" rx="1" fill="#4A9EE0"/>
+      <rect x="7" y="45" width="3" height="2" rx="1" fill="#4A9EE0"/>
+      <rect x="7" y="50" width="3" height="2" rx="1" fill="#4A9EE0"/>
+    </svg>`,
+                options: ["Placa-mãe", "Fonte de alimentação", "Placa de vídeo", "Controladora RAID"],
+                correct: 0,
+                feedback: {
+                    correct: "Correto! A placa-mãe é a base do computador. Ela conecta todos os componentes: processador, memória, armazenamento e placas de expansão.",
+                    wrong: "A resposta certa é Placa-mãe. É aquela placa grande com vários slots e conectores. Tudo no computador se liga a ela direta ou indiretamente."
+                }
+            },
+            {
+                chip: "Identifique o componente",
+                text: "Este componente converte a energia da tomada para o computador. Qual é ele?",
+                hint: "Sem ele, nenhum componente recebe energia.",
+                illustration: `<svg width="160" height="120" viewBox="0 0 160 120" fill="none">
+      <rect x="25" y="20" width="110" height="80" rx="8" fill="#162840" stroke="#FFAD6F" stroke-width="1.5"/>
+      <!-- grade de ventilação -->
+      <rect x="100" y="30" width="28" height="28" rx="4" fill="#0D1B2A"/>
+      <line x1="104" y1="30" x2="104" y2="58" stroke="#FFAD6F" stroke-width=".8" opacity=".4"/>
+      <line x1="110" y1="30" x2="110" y2="58" stroke="#FFAD6F" stroke-width=".8" opacity=".4"/>
+      <line x1="116" y1="30" x2="116" y2="58" stroke="#FFAD6F" stroke-width=".8" opacity=".4"/>
+      <line x1="122" y1="30" x2="122" y2="58" stroke="#FFAD6F" stroke-width=".8" opacity=".4"/>
+      <line x1="100" y1="36" x2="128" y2="36" stroke="#FFAD6F" stroke-width=".8" opacity=".4"/>
+      <line x1="100" y1="42" x2="128" y2="42" stroke="#FFAD6F" stroke-width=".8" opacity=".4"/>
+      <line x1="100" y1="48" x2="128" y2="48" stroke="#FFAD6F" stroke-width=".8" opacity=".4"/>
+      <line x1="100" y1="54" x2="128" y2="54" stroke="#FFAD6F" stroke-width=".8" opacity=".4"/>
+      <!-- cabos saindo -->
+      <rect x="25" y="38" width="12" height="4" rx="2" fill="#F7732A" opacity=".8"/>
+      <rect x="25" y="46" width="12" height="4" rx="2" fill="#F7732A" opacity=".8"/>
+      <rect x="25" y="54" width="12" height="4" rx="2" fill="#4A9EE0" opacity=".7"/>
+      <rect x="25" y="62" width="12" height="4" rx="2" fill="#4A9EE0" opacity=".7"/>
+      <rect x="25" y="70" width="12" height="4" rx="2" fill="#FFAD6F" opacity=".7"/>
+      <!-- label W -->
+      <text x="50" y="68" font-size="22" fill="#FFAD6F" font-family="Syne" font-weight="800" opacity=".4">650W</text>
+      <!-- botão liga -->
+      <circle cx="114" cy="80" r="8" fill="#0D1B2A" stroke="#FFAD6F" stroke-width="1.5"/>
+      <text x="110" y="84" font-size="8" fill="#FFAD6F" font-family="DM Sans">ON</text>
+    </svg>`,
+                options: ["Fonte de alimentação", "No-break (UPS)", "Bateria CMOS", "Regulador de tensão"],
+                correct: 0,
+                feedback: {
+                    correct: "Ótimo! A fonte de alimentação transforma a energia da tomada (127V/220V) em tensões menores (3.3V, 5V, 12V) usadas pelos componentes do computador.",
+                    wrong: "A resposta certa é Fonte de alimentação. Ela fica dentro do gabinete e distribui energia para todos os componentes através de cabos coloridos."
+                }
+            },
+            {
+                chip: "Identifique o componente",
+                text: "Este componente processa imagens e vídeos. Qual é ele?",
+                hint: "Gamer nenhum abre mão de um bom exemplar deste componente.",
+                illustration: `<svg width="160" height="120" viewBox="0 0 160 120" fill="none">
+      <rect x="15" y="25" width="130" height="70" rx="6" fill="#162840" stroke="#4A9EE0" stroke-width="1.5"/>
+      <!-- GPU chip -->
+      <rect x="35" y="38" width="50" height="44" rx="5" fill="#0D1B2A" stroke="#4A9EE0" stroke-width="1"/>
+      <rect x="42" y="45" width="36" height="30" rx="3" fill="#4A9EE0" opacity=".3"/>
+      <circle cx="60" cy="60" r="10" fill="#4A9EE0" opacity=".7"/>
+      <circle cx="60" cy="60" r="5"  fill="#0D1B2A"/>
+      <circle cx="60" cy="60" r="2"  fill="#4A9EE0"/>
+      <!-- coolers -->
+      <circle cx="105" cy="48" r="14" fill="#0D1B2A" stroke="#4A9EE0" stroke-width="1"/>
+      <circle cx="105" cy="48" r="6"  fill="#1E6FBF"/>
+      <path d="M105 48 Q110 38 105 32" stroke="#4A9EE0" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+      <path d="M105 48 Q115 48 121 44" stroke="#4A9EE0" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+      <path d="M105 48 Q100 58 105 64" stroke="#4A9EE0" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+      <path d="M105 48 Q95 48 89 52" stroke="#4A9EE0" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+      <!-- saídas de vídeo -->
+      <rect x="15" y="75" width="12" height="8" rx="1.5" fill="#4A9EE0" opacity=".6"/>
+      <rect x="15" y="65" width="12" height="8" rx="1.5" fill="#4A9EE0" opacity=".6"/>
+      <!-- slot PCIe dourado -->
+      <rect x="15" y="93" width="130" height="6" rx="2" fill="#FFAD6F" opacity=".6"/>
+    </svg>`,
+                options: ["Placa de vídeo (GPU)", "Processador (CPU)", "Placa de captura", "Memória VRAM"],
+                correct: 0,
+                feedback: {
+                    correct: "Correto! A placa de vídeo (GPU) processa e renderiza imagens. Ela tem seu próprio processador gráfico e memória dedicada, conectando-se ao slot PCIe da placa-mãe.",
+                    wrong: "A resposta certa é Placa de vídeo (GPU). Ela processa imagens e se conecta ao monitor. Muito usada em jogos, edição de vídeo e design 3D."
+                }
+            },
+            {
+                chip: "Identifique o componente",
+                text: "Este pequeno componente mantém a data/hora do computador mesmo desligado. O que é?",
+                hint: "Parece uma moeda redonda e brilhante.",
+                illustration: `<svg width="160" height="120" viewBox="0 0 160 120" fill="none">
+      <circle cx="80" cy="60" r="40" fill="#162840" stroke="#FFAD6F" stroke-width="2.5"/>
+      <circle cx="80" cy="60" r="32" fill="#1A3A5C"/>
+      <circle cx="80" cy="60" r="22" fill="#FFAD6F" opacity=".15"/>
+      <text x="54" y="55" font-size="11" fill="#FFAD6F" font-family="DM Sans" font-weight="700">CR2032</text>
+      <text x="62" y="70" font-size="9" fill="#FFAD6F" font-family="DM Sans" opacity=".7">3V  Lithium</text>
+      <!-- símbolo + - -->
+      <text x="72" y="90" font-size="14" fill="#FFAD6F" font-family="Syne" font-weight="800">+</text>
+      <line x1="55" y1="42" x2="55" y2="50" stroke="#FFAD6F" stroke-width="1.5" opacity=".4"/>
+      <line x1="51" y1="46" x2="59" y2="46" stroke="#FFAD6F" stroke-width="1.5" opacity=".4"/>
+    </svg>`,
+                options: ["Bateria CMOS", "Capacitor", "Chip de BIOS", "Regulador de voltagem"],
+                correct: 0,
+                feedback: {
+                    correct: "Isso! A bateria CMOS (CR2032) alimenta o chip que guarda configurações como data, hora e ajustes da BIOS mesmo quando o computador está desligado e desconectado.",
+                    wrong: "A resposta certa é Bateria CMOS. Aquela moedinha no meio da placa-mãe! Ela mantém o relógio do computador funcionando. Quando morre, o PC perde a data ao ser desligado."
+                }
+            },
+            {
+                chip: "Identifique o componente",
+                text: "Este componente resfria o processador. O que é?",
+                hint: "Tem aletas de metal e uma ventoinha no topo.",
+                illustration: `<svg width="160" height="120" viewBox="0 0 160 120" fill="none">
+      <!-- base -->
+      <rect x="30" y="75" width="100" height="12" rx="3" fill="#4A9EE0" opacity=".8"/>
+      <!-- aletas -->
+      <rect x="35" y="30" width="8" height="46" rx="2" fill="#4A9EE0" opacity=".6"/>
+      <rect x="47" y="25" width="8" height="51" rx="2" fill="#4A9EE0" opacity=".7"/>
+      <rect x="59" y="22" width="8" height="54" rx="2" fill="#4A9EE0" opacity=".8"/>
+      <rect x="71" y="22" width="8" height="54" rx="2" fill="#4A9EE0" opacity=".9"/>
+      <rect x="83" y="22" width="8" height="54" rx="2" fill="#4A9EE0" opacity=".8"/>
+      <rect x="95" y="25" width="8" height="51" rx="2" fill="#4A9EE0" opacity=".7"/>
+      <rect x="107" y="30" width="8" height="46" rx="2" fill="#4A9EE0" opacity=".6"/>
+      <!-- ventoinha (círculo) -->
+      <circle cx="80" cy="45" r="20" fill="#162840" stroke="#4A9EE0" stroke-width="1.5" opacity=".9"/>
+      <circle cx="80" cy="45" r="8" fill="#1E6FBF"/>
+      <circle cx="80" cy="45" r="3" fill="#4A9EE0"/>
+      <!-- pás -->
+      <path d="M80 45 Q85 32 80 26" stroke="#4A9EE0" stroke-width="2" stroke-linecap="round" fill="none"/>
+      <path d="M80 45 Q93 45 99 40" stroke="#4A9EE0" stroke-width="2" stroke-linecap="round" fill="none"/>
+      <path d="M80 45 Q75 58 80 64" stroke="#4A9EE0" stroke-width="2" stroke-linecap="round" fill="none"/>
+      <path d="M80 45 Q67 45 61 50" stroke="#4A9EE0" stroke-width="2" stroke-linecap="round" fill="none"/>
+    </svg>`,
+                options: ["Cooler de CPU", "Fonte de alimentação", "Ventoinha do gabinete", "Dissipador de GPU"],
+                correct: 0,
+                feedback: {
+                    correct: "Correto! O cooler de CPU é composto por um dissipador de calor (aletas metálicas) e uma ventoinha. Ele retira o calor do processador para evitar superaquecimento.",
+                    wrong: "A resposta certa é Cooler de CPU. Aquele conjunto de aletas + ventoinha vai em cima do processador e é essencial para evitar que ele queime por superaquecimento."
+                }
+            },
+            {
+                chip: "Identifique o componente",
+                text: "Este componente conecta o computador a uma rede. Qual é ele?",
+                hint: "Tem uma porta onde você encaixa o cabo de rede (RJ-45).",
+                illustration: `<svg width="160" height="120" viewBox="0 0 160 120" fill="none">
+      <rect x="20" y="30" width="120" height="60" rx="6" fill="#162840" stroke="#1AB078" stroke-width="1.5"/>
+      <!-- chip principal -->
+      <rect x="35" y="45" width="40" height="30" rx="4" fill="#0D1B2A" stroke="#1AB078" stroke-width="1"/>
+      <rect x="42" y="52" width="26" height="16" rx="2" fill="#1AB078" opacity=".4"/>
+      <text x="43" y="63" font-size="8" fill="#1AB078" font-family="DM Sans" font-weight="600">RTL8111</text>
+      <!-- porta RJ-45 -->
+      <rect x="110" y="42" width="22" height="18" rx="2" fill="#0D1B2A" stroke="#1AB078" stroke-width="1.5"/>
+      <rect x="113" y="45" width="16" height="12" rx="1" fill="#1A3A5C"/>
+      <!-- pinos RJ-45 -->
+      <rect x="114" y="53" width="2" height="4" rx=".5" fill="#FFAD6F"/>
+      <rect x="117" y="53" width="2" height="4" rx=".5" fill="#FFAD6F"/>
+      <rect x="120" y="53" width="2" height="4" rx=".5" fill="#FFAD6F"/>
+      <rect x="123" y="53" width="2" height="4" rx=".5" fill="#FFAD6F"/>
+      <!-- LEDs -->
+      <circle cx="114" cy="68" r="3" fill="#1AB078" opacity=".9"/>
+      <circle cx="122" cy="68" r="3" fill="#FFAD6F" opacity=".9"/>
+      <!-- slot PCIe -->
+      <rect x="20" y="88" width="120" height="5" rx="2" fill="#1AB078" opacity=".5"/>
+      <!-- capacitores -->
+      <rect x="88" y="42" width="6" height="12" rx="2" fill="#4A9EE0" opacity=".6"/>
+      <rect x="97" y="42" width="6" height="12" rx="2" fill="#4A9EE0" opacity=".6"/>
+    </svg>`,
+                options: ["Placa de rede", "Placa de som", "Placa de vídeo", "Adaptador Wi-Fi"],
+                correct: 0,
+                feedback: {
+                    correct: "Isso! A placa de rede (NIC) conecta o computador à rede local via cabo Ethernet (RJ-45). Os LEDs indicam se há conexão ativa e tráfego de dados.",
+                    wrong: "A resposta certa é Placa de rede. Ela tem aquela porta retangular onde encaixamos o cabo de rede. Pode vir integrada na placa-mãe ou como placa de expansão."
+                }
+            },
+            {
+                chip: "Identifique o componente",
+                text: "Este dispositivo armazena dados em discos magnéticos giratórios. O que é?",
+                hint: "Faz um barulhinho ao ser acessado e é mais lento que o SSD.",
+                illustration: `<svg width="160" height="120" viewBox="0 0 160 120" fill="none">
+      <rect x="15" y="20" width="130" height="80" rx="6" fill="#162840" stroke="#8BA3BC" stroke-width="1.5"/>
+      <!-- disco -->
+      <circle cx="75" cy="60" r="32" fill="#0D1B2A" stroke="#8BA3BC" stroke-width="1"/>
+      <circle cx="75" cy="60" r="22" fill="#162840"/>
+      <circle cx="75" cy="60" r="12" fill="#1A3A5C"/>
+      <circle cx="75" cy="60" r="4"  fill="#8BA3BC"/>
+      <!-- trilhas -->
+      <circle cx="75" cy="60" r="28" fill="none" stroke="#8BA3BC" stroke-width=".5" opacity=".3"/>
+      <circle cx="75" cy="60" r="18" fill="none" stroke="#8BA3BC" stroke-width=".5" opacity=".3"/>
+      <!-- cabeça de leitura -->
+      <line x1="75" y1="60" x2="115" y2="38" stroke="#F7732A" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="115" cy="38" r="4" fill="#F7732A"/>
+      <!-- conector SATA -->
+      <rect x="125" y="55" width="20" height="10" rx="2" fill="#FFAD6F" opacity=".7"/>
+      <rect x="128" y="57" width="14" height="6" rx="1" fill="#0D1B2A"/>
+      <!-- label -->
+      <text x="20" y="38" font-size="9" fill="#8BA3BC" font-family="DM Sans" font-weight="600">1TB HDD SATA</text>
+    </svg>`,
+                options: ["HD (Hard Disk)", "SSD SATA", "Pen Drive", "Cartão de memória"],
+                correct: 0,
+                feedback: {
+                    correct: "Correto! O HD (Hard Disk Drive) armazena dados em pratos magnéticos giratórios. É mais lento que o SSD, mas costuma ter maior capacidade por um preço menor.",
+                    wrong: "A resposta certa é HD (Hard Disk). Ele usa discos magnéticos que giram para armazenar dados. Por isso faz barulho e é mais frágil que um SSD, que não tem partes mecânicas."
+                }
+            }
+        ];
+
+        // ═══════════════════════════════════════
+        // ESTADO DO JOGO
+        // ═══════════════════════════════════════
+        let currentQ = 0;
+        let score = 0;
+        let wrong = 0;
+        let answered = false;
+        let results = [];
+        let shuffled = [];
+
+        function shuffle(arr) {
+            return [...arr].sort(() => Math.random() - .5);
+        }
+
+        // ═══════════════════════════════════════
+        // NAVEGAÇÃO DE TELAS
+        // ═══════════════════════════════════════
+        function show(id) {
+            ['screen-intro', 'screen-quiz', 'screen-result'].forEach(s => {
+                document.getElementById(s).style.display = 'none';
+            });
+            document.getElementById(id).style.display = 'block';
+        }
+
+        function goBack() {
+            if (document.getElementById('screen-intro').style.display !== 'none' ||
+                document.getElementById('screen-intro').style.display === '') {
+                goHome();
+            } else {
+                show('screen-intro');
+                document.getElementById('progress-wrap').style.display = 'none';
+                document.getElementById('badge-progress').textContent = '0/10';
+            }
+        }
+
+        function goHome() {
+            window.location.href = 'index.html';
+        }
+
+        // ═══════════════════════════════════════
+        // INICIAR QUIZ
+        // ═══════════════════════════════════════
+        function startQuiz() {
+            currentQ = 0; score = 0; wrong = 0; results = [];
+            shuffled = shuffle(questions);
+            show('screen-quiz');
+            document.getElementById('progress-wrap').style.display = 'block';
+            renderQuestion();
+        }
+
+        function restartQuiz() { startQuiz(); }
+
+        // ═══════════════════════════════════════
+        // RENDERIZAR QUESTÃO
+        // ═══════════════════════════════════════
+        function renderQuestion() {
+            answered = false;
+            const q = shuffled[currentQ];
+
+            // topbar badge
+            document.getElementById('badge-progress').textContent = `${currentQ + 1}/10`;
+            // progress bar
+            document.getElementById('q-current').textContent = currentQ + 1;
+            document.getElementById('q-score-label').innerHTML =
+                `✓ ${score} &nbsp; ✗ ${wrong}`;
+            const pct = (currentQ / 10) * 100;
+            document.getElementById('progress-fill').style.width = pct + '%';
+
+            // conteúdo
+            document.getElementById('q-chip').textContent = q.chip;
+            document.getElementById('q-illustration').innerHTML = q.illustration;
+            document.getElementById('q-text').textContent = q.text;
+            document.getElementById('q-hint').textContent = '💡 Dica: ' + q.hint;
+
+            // opções embaralhadas
+            const optList = document.getElementById('options-list');
+            optList.innerHTML = '';
+            const letters = ['A', 'B', 'C', 'D'];
+            const optIndexes = shuffle([0, 1, 2, 3]);
+            optIndexes.forEach((origIdx, i) => {
+                const btn = document.createElement('div');
+                btn.className = 'option';
+                btn.innerHTML = `
+      <div class="option-letter">${letters[i]}</div>
+      <div class="option-text">${q.options[origIdx]}</div>`;
+                btn.addEventListener('click', () => selectOption(btn, origIdx, q));
+                optList.appendChild(btn);
+            });
+
+            // esconder feedback e botão
+            const fb = document.getElementById('feedback-box');
+            fb.style.display = 'none'; fb.className = 'feedback-box';
+            const btnNext = document.getElementById('btn-next');
+            btnNext.classList.remove('show');
+            btnNext.style.display = 'none';
+        }
+
+        // ═══════════════════════════════════════
+        // SELECIONAR OPÇÃO
+        // ═══════════════════════════════════════
+        function selectOption(btn, chosenIdx, q) {
+            if (answered) return;
+            answered = true;
+
+            const isCorrect = chosenIdx === q.correct;
+            const opts = document.querySelectorAll('.option');
+
+            // marca resposta escolhida
+            btn.classList.add(isCorrect ? 'correct' : 'wrong');
+
+            // se errou, mostra a correta
+            if (!isCorrect) {
+                opts.forEach(o => {
+                    const text = o.querySelector('.option-text').textContent;
+                    if (text === q.options[q.correct]) o.classList.add('correct');
+                });
+            }
+
+            // desabilita todas
+            opts.forEach(o => o.classList.add('disabled'));
+
+            // atualiza pontuação
+            if (isCorrect) score++; else wrong++;
+            results.push({ text: q.text, correct: isCorrect });
+
+            // feedback
+            const fb = document.getElementById('feedback-box');
+            fb.className = 'feedback-box ' + (isCorrect ? 'correct' : 'wrong');
+            document.getElementById('feedback-icon').textContent = isCorrect ? '✅' : '❌';
+            document.getElementById('feedback-title').textContent = isCorrect ? 'Resposta certa!' : 'Quase lá!';
+            document.getElementById('feedback-text').textContent =
+                isCorrect ? q.feedback.correct : q.feedback.wrong;
+            fb.style.display = 'block';
+
+            // botão próxima
+            const btnNext = document.getElementById('btn-next');
+            btnNext.textContent = currentQ < 9 ? 'Próxima questão →' : 'Ver resultado →';
+            btnNext.classList.add('show');
+            btnNext.style.display = 'flex';
+        }
+
+        // ═══════════════════════════════════════
+        // PRÓXIMA QUESTÃO
+        // ═══════════════════════════════════════
+        function nextQuestion() {
+            currentQ++;
+            if (currentQ >= 10) {
+                showResult();
+            } else {
+                renderQuestion();
+                // scroll ao topo
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // ═══════════════════════════════════════
+        // TELA DE RESULTADO
+        // ═══════════════════════════════════════
+        function showResult() {
+            show('screen-result');
+            document.getElementById('progress-fill').style.width = '100%';
+            document.getElementById('badge-progress').textContent = '10/10';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // número de acertos
+            document.getElementById('result-num').textContent = score;
+
+            // arco SVG
+            const circumference = 364;
+            const offset = circumference - (score / 10) * circumference;
+            setTimeout(() => {
+                const arc = document.getElementById('score-arc');
+                arc.style.transition = 'stroke-dashoffset 1s cubic-bezier(.4,0,.2,1)';
+                arc.style.strokeDashoffset = offset;
+                arc.style.stroke = score >= 7 ? '#1AB078' : score >= 4 ? '#F7732A' : '#E8445A';
+            }, 100);
+
+            // título e subtítulo
+            let title, subtitle;
+            if (score === 10) {
+                title = '🏆 Perfeito!';
+                subtitle = 'Você acertou tudo! Domina os componentes de hardware como um verdadeiro técnico.';
+            } else if (score >= 7) {
+                title = '🎉 Muito bem!';
+                subtitle = 'Ótimo desempenho! Revise as questões que errou e você chega na perfeição.';
+            } else if (score >= 4) {
+                title = '💪 Continue assim!';
+                subtitle = 'Você está no caminho certo. Tente novamente para fixar melhor os componentes.';
+            } else {
+                title = '📚 Vamos estudar mais!';
+                subtitle = 'Não desanime! Revise os componentes no material da disciplina e tente de novo.';
+            }
+            document.getElementById('result-title').textContent = title;
+            document.getElementById('result-subtitle').textContent = subtitle;
+
+            // breakdown
+            const list = document.getElementById('breakdown-list');
+            list.innerHTML = '';
+            results.forEach((r, i) => {
+                const row = document.createElement('div');
+                row.className = 'breakdown-row';
+                row.innerHTML = `
+      <div class="breakdown-q">${i + 1}. ${r.text.length > 42 ? r.text.slice(0, 42) + '…' : r.text}</div>
+      <span class="breakdown-badge ${r.correct ? 'ok' : 'err'}">${r.correct ? '✓ Certo' : '✗ Errou'}</span>`;
+                list.appendChild(row);
+            });
+        }
+    </script>
+</body>
+
+</html>
