@@ -1265,10 +1265,11 @@
     <p class="feedback-text">${isCorrect ? step.feedback.correct : step.feedback.wrong}</p>`;
             fb.style.display = 'block';
 
-            const btn = document.getElementById('btn-next');
+            const btn = document.getElementById('btn-next');            
             btn.textContent = current < 5 ? 'Próxima etapa →' : 'Ver resultado →';
             btn.classList.add('show');
             btn.style.display = 'flex';
+            
         }
 
         function placeComponent(step) {
