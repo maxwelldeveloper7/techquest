@@ -1408,6 +1408,9 @@
             if (isCorrect) score++; else wrong++;
             results.push({ text: q.text, correct: isCorrect });
 
+            document.getElementById('q-score-label').innerHTML =
+                `✓ ${score} &nbsp; ✗ ${wrong}`;
+
             // feedback
             const fb = document.getElementById('feedback-box');
             fb.className = 'feedback-box ' + (isCorrect ? 'correct' : 'wrong');

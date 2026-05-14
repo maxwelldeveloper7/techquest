@@ -1251,6 +1251,7 @@
 
             if (isCorrect) { score++; placeComponent(step); }
             else wrong++;
+            document.getElementById('step-score-label').innerHTML = `✓ ${score} &nbsp;✗ ${wrong}`;
 
             results.push({ step, correct: isCorrect });
 
