@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechQuest — Módulo 2: Montagem</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --blue-dark: #0D1B2A;
+            --blue-mid: #1A3A5C;
+            --blue: #1E6FBF;
+            --blue-light: #4A9EE0;
+            --orange: #F7732A;
+            --orange-light: #FFAD6F;
+            --white: #F4F8FF;
+            --gray: #8BA3BC;
+            --card-bg: #162840;
+            --green: #1AB078;
+            --red: #E8445A;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: var(--blue-dark);
+            color: var(--white);
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .bg-pattern {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background-image:
+                radial-gradient(circle at 80% 10%, rgba(30, 111, 191, .25) 0%, transparent 50%),
+                radial-gradient(circle at 10% 80%, rgba(247, 115, 42, .12) 0%, transparent 45%);
+        }
+
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background-image:
+                linear-gradient(rgba(74, 158, 224, .06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(74, 158, 224, .06) 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
+
+        .page {
+            position: relative;
+            z-index: 1;
+            max-width: 430px;
+            margin: 0 auto;
+            padding: 0 20px 48px;
+        }
+
+        /* TOPBAR */
+        .topbar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 0 12px;
+        }
+
+        .btn-back {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: var(--card-bg);
+            border: 1px solid rgba(74, 158, 224, .15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: background .15s;
+        }
+
+        .btn-back:active {
+            background: var(--blue-mid);
+        }
+
+        .topbar-info {
+            flex: 1;
+        }
+
+        .topbar-label {
+            font-size: 11px;
+            color: var(--gray);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .topbar-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .topbar-badge {
+            font-size: 11px;
+            font-weight: 600;
+            background: rgba(247, 115, 42, .15);
+            color: var(--orange-light);
+            border: 1px solid rgba(247, 115, 42, .3);
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        /* PROGRESS */
+        .progress-wrap {
+            margin-bottom: 18px;
+        }
+
+        .progress-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--gray);
+            margin-bottom: 7px;
+        }
+
+        .progress-meta strong {
+            color: var(--white);
+        }
+
+        .progress-track {
+            height: 6px;
+            background: var(--card-bg);
+            border-radius: 99px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--orange), var(--orange-light));
+            border-radius: 99px;
+            transition: width .5s cubic-bezier(.4, 0, .2, 1);
+        }
+
+        /* INSTRUÇÃO */
+        .instruction-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(247, 115, 42, .2);
+            border-radius: 16px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 14px;
+            animation: fadeUp .35s ease both;
+        }
+
+        .instruction-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: rgba(247, 115, 42, .15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .instruction-label {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            color: var(--orange);
+            text-transform: uppercase;
+            margin-bottom: 3px;
+        }
+
+        .instruction-text {
+            font-family: 'Syne', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 1.35;
+        }
+
+        .instruction-hint {
+            font-size: 12px;
+            color: var(--gray);
+            margin-top: 4px;
+            line-height: 1.5;
+        }
+
+        /* PLACA-MÃE */
+        .motherboard-wrap {
+            background: var(--card-bg);
+            border: 1px solid rgba(74, 158, 224, .15);
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 14px;
+            animation: fadeUp .35s .05s ease both;
+        }
+
+        .motherboard-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--gray);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .motherboard-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(74, 158, 224, .12);
+        }
+
+        #mb-svg {
+            width: 100%;
+            max-width: 380px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        /* LEGENDA */
+        .legend-wrap {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 12px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 10px;
+            color: var(--gray);
+        }
+
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+
+        /* OPÇÕES DE COMPONENTES */
+        .options-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--gray);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            animation: fadeUp .35s .1s ease both;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 14px;
+            animation: fadeUp .35s .15s ease both;
+        }
+
+        .opt-card {
+            background: var(--card-bg);
+            border: 1.5px solid rgba(74, 158, 224, .15);
+            border-radius: 14px;
+            padding: 12px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: border-color .15s, background .15s, transform .1s;
+            user-select: none;
+        }
+
+        .opt-card:active {
+            transform: scale(.97);
+        }
+
+        .opt-card:hover {
+            border-color: rgba(74, 158, 224, .4);
+            background: rgba(30, 111, 191, .12);
+        }
+
+        .opt-card.correct {
+            border-color: var(--green);
+            background: rgba(26, 176, 120, .12);
+            animation: pulse-green .35s ease;
+        }
+
+        .opt-card.wrong {
+            border-color: var(--red);
+            background: rgba(232, 68, 90, .1);
+            animation: shake .3s ease;
+        }
+
+        .opt-card.disabled {
+            pointer-events: none;
+            opacity: .45;
+        }
+
+        .opt-card.correct.disabled {
+            opacity: 1;
+        }
+
+        .opt-card-icon {
+            width: 52px;
+            height: 52px;
+        }
+
+        .opt-card-name {
+            font-family: 'Syne', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1.25;
+        }
+
+        /* FEEDBACK */
+        .feedback-box {
+            border-radius: 14px;
+            padding: 14px 16px;
+            margin-bottom: 14px;
+            display: none;
+            animation: fadeUp .3s ease both;
+        }
+
+        .feedback-box.correct {
+            background: rgba(26, 176, 120, .12);
+            border: 1px solid rgba(26, 176, 120, .3);
+        }
+
+        .feedback-box.wrong {
+            background: rgba(232, 68, 90, .1);
+            border: 1px solid rgba(232, 68, 90, .3);
+        }
+
+        .feedback-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 5px;
+        }
+
+        .feedback-header strong {
+            font-family: 'Syne', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .feedback-box.correct .feedback-header strong {
+            color: var(--green);
+        }
+
+        .feedback-box.wrong .feedback-header strong {
+            color: var(--red);
+        }
+
+        .feedback-text {
+            font-size: 13px;
+            color: var(--gray);
+            line-height: 1.6;
+        }
+
+        .btn-next {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            background: var(--blue);
+            color: #fff;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 14px;
+            border-radius: 13px;
+            border: none;
+            cursor: pointer;
+            transition: transform .15s;
+        }
+
+        .btn-next:active {
+            transform: scale(.98);
+        }
+
+        .btn-next.show {
+            display: flex;
+            animation: fadeUp .3s ease both;
+        }
+
+        /* RESULTADO FINAL */
+        #screen-result {
+            display: none;
+            animation: fadeUp .4s ease both;
+        }
+
+        .result-hero {
+            text-align: center;
+            padding: 24px 0;
+        }
+
+        .result-score-ring {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            margin: 0 auto 20px;
+        }
+
+        .result-score-ring svg {
+            position: absolute;
+            inset: 0;
+            transform: rotate(-90deg);
+        }
+
+        .result-score-inner {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .result-score-num {
+            font-family: 'Syne', sans-serif;
+            font-size: 38px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .result-score-label {
+            font-size: 11px;
+            color: var(--gray);
+            margin-top: 2px;
+        }
+
+        .result-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .result-subtitle {
+            font-size: 14px;
+            color: var(--gray);
+            line-height: 1.6;
+            max-width: 280px;
+            margin: 0 auto 24px;
+        }
+
+        .result-breakdown {
+            background: var(--card-bg);
+            border: 1px solid rgba(74, 158, 224, .12);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .breakdown-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .breakdown-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 0;
+            border-bottom: 1px solid rgba(74, 158, 224, .06);
+        }
+
+        .breakdown-row:last-child {
+            border-bottom: none;
+        }
+
+        .breakdown-icon {
+            width: 32px;
+            height: 32px;
+            flex-shrink: 0;
+        }
+
+        .breakdown-info {
+            flex: 1;
+        }
+
+        .breakdown-name {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .breakdown-slot {
+            font-size: 11px;
+            color: var(--gray);
+        }
+
+        .breakdown-badge {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 99px;
+        }
+
+        .breakdown-badge.ok {
+            background: rgba(26, 176, 120, .15);
+            color: var(--green);
+        }
+
+        .breakdown-badge.err {
+            background: rgba(232, 68, 90, .12);
+            color: var(--red);
+        }
+
+        .result-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            background: var(--orange);
+            color: #fff;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            padding: 15px;
+            border-radius: 14px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(247, 115, 42, .35);
+            transition: transform .15s;
+        }
+
+        .btn-primary:active {
+            transform: scale(.98);
+        }
+
+        .btn-secondary {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            background: var(--card-bg);
+            color: var(--white);
+            border: 1.5px solid rgba(74, 158, 224, .2);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 14px;
+            border-radius: 13px;
+            cursor: pointer;
+            transition: background .15s;
+        }
+
+        .btn-secondary:active {
+            background: var(--blue-mid);
+        }
+
+        /* ANIMATIONS */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(14px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse-green {
+            0% {
+                box-shadow: 0 0 0 0 rgba(26, 176, 120, .5);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(26, 176, 120, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(26, 176, 120, 0);
+            }
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-6px);
+            }
+
+            75% {
+                transform: translateX(6px);
+            }
+        }
+
+        @keyframes snapIn {
+            0% {
+                opacity: 0;
+                transform: scale(.4);
+            }
+
+            70% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .snap-in {
+            animation: snapIn .45s cubic-bezier(.4, 0, .2, 1) both;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-pattern"></div>
+    <div class="bg-grid"></div>
+
+    <div class="page">
+
+        <!-- TOPBAR -->
+        <div class="topbar">
+            <div class="btn-back" onclick="goBack()">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                    <path d="M11 4l-5 5 5 5" stroke="#4A9EE0" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+            </div>
+            <div class="topbar-info">
+                <div class="topbar-label">Módulo 02</div>
+                <div class="topbar-title">Montagem na Placa-mãe</div>
+            </div>
+            <div class="topbar-badge" id="badge-step">Etapa 1/6</div>
+        </div>
+
+        <!-- PROGRESS -->
+        <div class="progress-wrap">
+            <div class="progress-meta">
+                <span>Etapa <strong id="step-current">1</strong> de <strong>6</strong></span>
+                <span id="step-score-label">✓ 0 &nbsp;✗ 0</span>
+            </div>
+            <div class="progress-track">
+                <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+            </div>
+        </div>
+
+        <!-- TELA JOGO -->
+        <div id="screen-game">
+
+            <!-- INSTRUÇÃO -->
+            <div class="instruction-card" id="instruction-card">
+                <div class="instruction-icon" id="instr-icon">
+                    <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                        <circle cx="11" cy="11" r="9" stroke="#F7732A" stroke-width="2" />
+                        <path d="M11 7v5l3 3" stroke="#F7732A" stroke-width="1.8" stroke-linecap="round" />
+                    </svg>
+                </div>
+                <div>
+                    <div class="instruction-label">Barramento destacado</div>
+                    <div class="instruction-text" id="instr-text">Carregando...</div>
+                    <div class="instruction-hint" id="instr-hint"></div>
+                </div>
+            </div>
+
+            <!-- PLACA-MÃE -->
+            <div class="motherboard-wrap">
+                <div class="motherboard-title">Placa-mãe</div>
+                <svg id="mb-svg" viewBox="0 0 340 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+                    <!-- PCB base -->
+                    <rect x="4" y="4" width="332" height="292" rx="10" fill="#0D2B1A" stroke="#1E6FBF"
+                        stroke-width="1.5" />
+
+                    <!-- trilhas horizontais -->
+                    <line x1="4" y1="80" x2="336" y2="80" stroke="#1E6FBF" stroke-width=".4" opacity=".25" />
+                    <line x1="4" y1="140" x2="336" y2="140" stroke="#1E6FBF" stroke-width=".4" opacity=".25" />
+                    <line x1="4" y1="200" x2="336" y2="200" stroke="#1E6FBF" stroke-width=".4" opacity=".25" />
+                    <line x1="4" y1="260" x2="336" y2="260" stroke="#1E6FBF" stroke-width=".4" opacity=".25" />
+                    <!-- trilhas verticais -->
+                    <line x1="80" y1="4" x2="80" y2="296" stroke="#1E6FBF" stroke-width=".4" opacity=".25" />
+                    <line x1="160" y1="4" x2="160" y2="296" stroke="#1E6FBF" stroke-width=".4" opacity=".25" />
+                    <line x1="240" y1="4" x2="240" y2="296" stroke="#1E6FBF" stroke-width=".4" opacity=".25" />
+
+                    <!-- ══ SLOT: Socket CPU ══ -->
+                    <g id="slot-cpu">
+                        <rect x="20" y="20" width="90" height="90" rx="6" fill="#0A1F12" stroke="#4A9EE0"
+                            stroke-width="1.5" stroke-dasharray="4 3" />
+                        <!-- pinos -->
+                        <g opacity=".5">
+                            <rect x="30" y="26" width="2" height="4" rx="1" fill="#4A9EE0" />
+                            <rect x="37" y="26" width="2" height="4" rx="1" fill="#4A9EE0" />
+                            <rect x="44" y="26" width="2" height="4" rx="1" fill="#4A9EE0" />
+                            <rect x="51" y="26" width="2" height="4" rx="1" fill="#4A9EE0" />
+                            <rect x="58" y="26" width="2" height="4" rx="1" fill="#4A9EE0" />
+                            <rect x="65" y="26" width="2" height="4" rx="1" fill="#4A9EE0" />
+                            <rect x="72" y="26" width="2" height="4" rx="1" fill="#4A9EE0" />
+                            <rect x="79" y="26" width="2" height="4" rx="1" fill="#4A9EE0" />
+                            <rect x="86" y="26" width="2" height="4" rx="1" fill="#4A9EE0" />
+                            <rect x="30" y="98" width="2" height="4" rx="1" fill="#4A9EE0" />
+                            <rect x="37" y="98" width="2" height="4" rx="1" fill="#4A9EE0" />
+                            <rect x="44" y="98" width="2" height="4" rx="1" fill="#4A9EE0" />
+                            <rect x="51" y="98" width="2" height="4" rx="1" fill="#4A9EE0" />
+                            <rect x="58" y="98" width="2" height="4" rx="1" fill="#4A9EE0" />
+                            <rect x="65" y="98" width="2" height="4" rx="1" fill="#4A9EE0" />
+                        </g>
+                        <text x="65" y="68" text-anchor="middle" font-size="9" fill="#4A9EE0" font-family="DM Sans"
+                            font-weight="600" opacity=".7">Socket CPU</text>
+                    </g>
+                    <!-- componente encaixado CPU -->
+                    <g id="placed-cpu" display="none">
+                        <rect x="22" y="22" width="86" height="86" rx="5" fill="#F7732A" opacity=".9" class="snap-in" />
+                        <rect x="28" y="28" width="74" height="74" rx="3" fill="#0D1B2A" />
+                        <text x="65" y="72" text-anchor="middle" font-size="11" fill="#F7732A" font-family="Syne"
+                            font-weight="800">CPU</text>
+                    </g>
+
+                    <!-- ══ SLOT: RAM x2 ══ -->
+                    <g id="slot-ram">
+                        <rect x="124" y="14" width="14" height="80" rx="3" fill="#0A1F12" stroke="#4A9EE0"
+                            stroke-width="1.5" stroke-dasharray="4 3" />
+                        <rect x="142" y="14" width="14" height="80" rx="3" fill="#0A1F12" stroke="#4A9EE0"
+                            stroke-width="1.5" stroke-dasharray="4 3" />
+                        <text x="158" y="105" text-anchor="end" font-size="8" fill="#4A9EE0" font-family="DM Sans"
+                            font-weight="600" opacity=".7">Slots RAM</text>
+                    </g>
+                    <!-- componente encaixado RAM -->
+                    <g id="placed-ram" display="none">
+                        <rect x="124" y="14" width="14" height="80" rx="3" fill="#4A9EE0" class="snap-in" />
+                        <rect x="142" y="14" width="14" height="80" rx="3" fill="#4A9EE0" class="snap-in" />
+                        <rect x="126" y="18" width="10" height="8" rx="1.5" fill="#0D1B2A" />
+                        <rect x="126" y="28" width="10" height="8" rx="1.5" fill="#0D1B2A" />
+                        <rect x="126" y="38" width="10" height="8" rx="1.5" fill="#0D1B2A" />
+                        <rect x="144" y="18" width="10" height="8" rx="1.5" fill="#0D1B2A" />
+                        <rect x="144" y="28" width="10" height="8" rx="1.5" fill="#0D1B2A" />
+                        <rect x="144" y="38" width="10" height="8" rx="1.5" fill="#0D1B2A" />
+                    </g>
+
+                    <!-- ══ SLOT: PCIe ══ -->
+                    <g id="slot-pcie">
+                        <rect x="20" y="190" width="200" height="16" rx="3" fill="#0A1F12" stroke="#4A9EE0"
+                            stroke-width="1.5" stroke-dasharray="4 3" />
+                        <text x="20" y="220" font-size="8" fill="#4A9EE0" font-family="DM Sans" font-weight="600"
+                            opacity=".7">Slot PCIe x16</text>
+                    </g>
+                    <!-- componente encaixado PCIe (GPU) -->
+                    <g id="placed-pcie" display="none">
+                        <rect x="20" y="175" width="200" height="50" rx="5" fill="#162840" stroke="#4A9EE0"
+                            stroke-width="1" class="snap-in" />
+                        <rect x="26" y="180" width="60" height="40" rx="4" fill="#0D1B2A" stroke="#4A9EE0"
+                            stroke-width="1" />
+                        <circle cx="56" cy="200" r="12" fill="#4A9EE0" opacity=".5" />
+                        <circle cx="56" cy="200" r="5" fill="#0D1B2A" />
+                        <rect x="100" y="182" width="110" height="36" rx="3" fill="#0D1B2A" />
+                        <rect x="104" y="186" width="14" height="10" rx="2" fill="#4A9EE0" opacity=".6" />
+                        <rect x="122" y="186" width="14" height="10" rx="2" fill="#4A9EE0" opacity=".4" />
+                        <text x="145" y="208" font-size="9" fill="#4A9EE0" font-family="Syne"
+                            font-weight="700">GPU</text>
+                    </g>
+
+                    <!-- ══ SLOT: ATX 24-pin ══ -->
+                    <g id="slot-atx">
+                        <rect x="298" y="14" width="28" height="60" rx="3" fill="#0A1F12" stroke="#FFAD6F"
+                            stroke-width="1.5" stroke-dasharray="4 3" />
+                        <rect x="301" y="17" width="4" height="4" rx="1" fill="#FFAD6F" opacity=".4" />
+                        <rect x="308" y="17" width="4" height="4" rx="1" fill="#FFAD6F" opacity=".4" />
+                        <rect x="315" y="17" width="4" height="4" rx="1" fill="#FFAD6F" opacity=".4" />
+                        <rect x="322" y="17" width="4" height="4" rx="1" fill="#FFAD6F" opacity=".4" />
+                        <rect x="301" y="24" width="4" height="4" rx="1" fill="#FFAD6F" opacity=".4" />
+                        <rect x="308" y="24" width="4" height="4" rx="1" fill="#FFAD6F" opacity=".4" />
+                        <rect x="315" y="24" width="4" height="4" rx="1" fill="#FFAD6F" opacity=".4" />
+                        <rect x="322" y="24" width="4" height="4" rx="1" fill="#FFAD6F" opacity=".4" />
+                        <text x="335" y="90" text-anchor="end" font-size="8" fill="#FFAD6F" font-family="DM Sans"
+                            font-weight="600" opacity=".7">ATX 24-pin</text>
+                    </g>
+                    <!-- componente encaixado ATX -->
+                    <g id="placed-atx" display="none">
+                        <rect x="298" y="14" width="28" height="60" rx="3" fill="#FFAD6F" opacity=".9"
+                            class="snap-in" />
+                        <rect x="301" y="17" width="4" height="4" rx="1" fill="#0D1B2A" />
+                        <rect x="308" y="17" width="4" height="4" rx="1" fill="#0D1B2A" />
+                        <rect x="315" y="17" width="4" height="4" rx="1" fill="#0D1B2A" />
+                        <rect x="322" y="17" width="4" height="4" rx="1" fill="#0D1B2A" />
+                        <rect x="301" y="24" width="4" height="4" rx="1" fill="#F7732A" />
+                        <rect x="308" y="24" width="4" height="4" rx="1" fill="#4A9EE0" />
+                        <rect x="315" y="24" width="4" height="4" rx="1" fill="#F7732A" />
+                        <rect x="322" y="24" width="4" height="4" rx="1" fill="#4A9EE0" />
+                    </g>
+
+                    <!-- ══ SLOT: M.2 ══ -->
+                    <g id="slot-m2">
+                        <rect x="180" y="120" width="80" height="14" rx="3" fill="#0A1F12" stroke="#F7732A"
+                            stroke-width="1.5" stroke-dasharray="4 3" />
+                        <text x="180" y="148" font-size="8" fill="#F7732A" font-family="DM Sans" font-weight="600"
+                            opacity=".7">Slot M.2</text>
+                    </g>
+                    <!-- componente encaixado M.2 -->
+                    <g id="placed-m2" display="none">
+                        <rect x="180" y="120" width="80" height="14" rx="3" fill="#162840" stroke="#F7732A"
+                            stroke-width="1" class="snap-in" />
+                        <rect x="183" y="123" width="12" height="8" rx="2" fill="#F7732A" opacity=".9" />
+                        <rect x="199" y="123" width="10" height="8" rx="1.5" fill="#F7732A" opacity=".5" />
+                        <rect x="213" y="123" width="10" height="8" rx="1.5" fill="#F7732A" opacity=".5" />
+                        <rect x="227" y="123" width="10" height="8" rx="1.5" fill="#F7732A" opacity=".5" />
+                        <rect x="241" y="123" width="10" height="8" rx="1.5" fill="#F7732A" opacity=".4" />
+                        <rect x="183" y="129" width="68" height="3" rx="1" fill="#FFAD6F" opacity=".3" />
+                    </g>
+
+                    <!-- ══ SLOT: SATA ══ -->
+                    <g id="slot-sata">
+                        <rect x="260" y="230" width="14" height="44" rx="3" fill="#0A1F12" stroke="#1AB078"
+                            stroke-width="1.5" stroke-dasharray="4 3" />
+                        <rect x="278" y="230" width="14" height="44" rx="3" fill="#0A1F12" stroke="#1AB078"
+                            stroke-width="1.5" stroke-dasharray="4 3" />
+                        <text x="260" y="285" font-size="8" fill="#1AB078" font-family="DM Sans" font-weight="600"
+                            opacity=".7">SATA</text>
+                    </g>
+                    <!-- componente encaixado SATA -->
+                    <g id="placed-sata" display="none">
+                        <rect x="260" y="230" width="14" height="44" rx="3" fill="#1AB078" opacity=".8"
+                            class="snap-in" />
+                        <rect x="278" y="230" width="14" height="44" rx="3" fill="#1AB078" opacity=".6"
+                            class="snap-in" />
+                        <rect x="262" y="233" width="10" height="6" rx="1.5" fill="#0D1B2A" />
+                        <rect x="262" y="242" width="10" height="6" rx="1.5" fill="#0D1B2A" />
+                        <rect x="262" y="251" width="10" height="6" rx="1.5" fill="#0D1B2A" />
+                        <rect x="280" y="233" width="10" height="6" rx="1.5" fill="#0D1B2A" />
+                        <rect x="280" y="242" width="10" height="6" rx="1.5" fill="#0D1B2A" />
+                    </g>
+
+                    <!-- Chip auxiliar (decorativo) -->
+                    <rect x="180" y="50" width="24" height="18" rx="3" fill="#162840" stroke="#4A9EE0" stroke-width="1"
+                        opacity=".6" />
+                    <text x="192" y="63" text-anchor="middle" font-size="6" fill="#4A9EE0" font-family="DM Sans"
+                        opacity=".7">BIOS</text>
+
+                    <!-- Bateria CMOS (decorativa) -->
+                    <circle cx="230" cy="80" r="14" fill="#162840" stroke="#FFAD6F" stroke-width="1" opacity=".5" />
+                    <text x="230" y="84" text-anchor="middle" font-size="6" fill="#FFAD6F" font-family="DM Sans"
+                        opacity=".6">CMOS</text>
+
+                </svg>
+
+                <!-- Legenda -->
+                <div class="legend-wrap" id="legend-wrap"></div>
+            </div>
+
+            <!-- OPÇÕES -->
+            <div class="options-label">Qual componente encaixa aqui?</div>
+            <div class="options-grid" id="options-grid"></div>
+
+            <!-- FEEDBACK -->
+            <div class="feedback-box" id="feedback-box"></div>
+            <button class="btn-next" id="btn-next" onclick="nextStep()"></button>
+
+        </div><!-- /screen-game -->
+
+        <!-- TELA RESULTADO -->
+        <div id="screen-result">
+            <div class="result-hero">
+                <div class="result-score-ring">
+                    <svg width="140" height="140" viewBox="0 0 140 140">
+                        <circle cx="70" cy="70" r="58" stroke="#162840" stroke-width="12" fill="none" />
+                        <circle cx="70" cy="70" r="58" id="score-arc" stroke="#F7732A" stroke-width="12" fill="none"
+                            stroke-linecap="round" stroke-dasharray="364" stroke-dashoffset="364" />
+                    </svg>
+                    <div class="result-score-inner">
+                        <div class="result-score-num" id="result-num">0</div>
+                        <div class="result-score-label">de 6 acertos</div>
+                    </div>
+                </div>
+                <h2 class="result-title" id="result-title"></h2>
+                <p class="result-subtitle" id="result-subtitle"></p>
+            </div>
+
+            <div class="result-breakdown">
+                <div class="breakdown-title">Resumo da montagem</div>
+                <div id="breakdown-list"></div>
+            </div>
+
+            <div class="result-actions">
+                <button class="btn-primary" onclick="restartGame()">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M3 8a5 5 0 1 1 1.5 3.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" />
+                        <path d="M3 5v3h3" stroke="#fff" stroke-width="1.8" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                    Montar novamente
+                </button>
+                <button class="btn-secondary" onclick="goHome()">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M2 6.5L8 2l6 4.5V14H10v-4H6v4H2z" stroke="#4A9EE0" stroke-width="1.6"
+                            stroke-linejoin="round" fill="none" />
+                    </svg>
+                    Voltar ao início
+                </button>
+            </div>
+        </div>
+
+    </div><!-- /page -->
+
+    <script>
+        // ═══════════════════════════════
+        // ETAPAS DE MONTAGEM
+        // ═══════════════════════════════
+        const steps = [
+            {
+                id: 'cpu',
+                slotId: 'slot-cpu',
+                placedId: 'placed-cpu',
+                highlight: '#F7732A',
+                instruction: 'Encaixe o Processador no Socket CPU',
+                hint: 'O socket é o encaixe principal da placa-mãe. Cada processador tem um tipo específico de socket.',
+                correct: 0,
+                options: [
+                    {
+                        name: 'Processador (CPU)', color: '#F7732A',
+                        svg: `<svg viewBox="0 0 52 52" fill="none"><rect x="8" y="8" width="36" height="36" rx="4" fill="#F7732A" opacity=".9"/><rect x="13" y="13" width="26" height="26" rx="2" fill="#0D1B2A"/><text x="26" y="31" text-anchor="middle" font-size="9" fill="#F7732A" font-family="Syne" font-weight="800">CPU</text><rect x="5" y="14" width="3" height="2" rx="1" fill="#F7732A"/><rect x="5" y="19" width="3" height="2" rx="1" fill="#F7732A"/><rect x="5" y="24" width="3" height="2" rx="1" fill="#F7732A"/><rect x="5" y="29" width="3" height="2" rx="1" fill="#F7732A"/><rect x="44" y="14" width="3" height="2" rx="1" fill="#F7732A"/><rect x="44" y="19" width="3" height="2" rx="1" fill="#F7732A"/><rect x="44" y="24" width="3" height="2" rx="1" fill="#F7732A"/><rect x="44" y="29" width="3" height="2" rx="1" fill="#F7732A"/><rect x="14" y="5" width="2" height="3" rx="1" fill="#F7732A"/><rect x="20" y="5" width="2" height="3" rx="1" fill="#F7732A"/><rect x="26" y="5" width="2" height="3" rx="1" fill="#F7732A"/><rect x="32" y="5" width="2" height="3" rx="1" fill="#F7732A"/></svg>`
+                    },
+                    {
+                        name: 'Memória RAM', color: '#4A9EE0',
+                        svg: `<svg viewBox="0 0 52 52" fill="none"><rect x="8" y="12" width="36" height="28" rx="3" fill="#4A9EE0"/><rect x="11" y="15" width="8" height="8" rx="1.5" fill="#0D1B2A"/><rect x="22" y="15" width="8" height="8" rx="1.5" fill="#0D1B2A"/><rect x="33" y="15" width="8" height="8" rx="1.5" fill="#0D1B2A"/><rect x="11" y="26" width="8" height="8" rx="1.5" fill="#0D1B2A"/><rect x="22" y="26" width="8" height="8" rx="1.5" fill="#0D1B2A"/><rect x="33" y="26" width="8" height="8" rx="1.5" fill="#0D1B2A"/></svg>`
+                    },
+                    {
+                        name: 'Placa de Vídeo', color: '#4A9EE0',
+                        svg: `<svg viewBox="0 0 52 52" fill="none"><rect x="4" y="12" width="44" height="28" rx="4" fill="#162840" stroke="#4A9EE0" stroke-width="1.5"/><circle cx="20" cy="26" r="8" fill="#4A9EE0" opacity=".5"/><circle cx="20" cy="26" r="4" fill="#0D1B2A"/><rect x="32" y="16" width="12" height="20" rx="2" fill="#0D1B2A"/><rect x="34" y="18" width="8" height="6" rx="1" fill="#4A9EE0" opacity=".5"/></svg>`
+                    },
+                    {
+                        name: 'Cooler', color: '#8BA3BC',
+                        svg: `<svg viewBox="0 0 52 52" fill="none"><circle cx="26" cy="26" r="18" fill="#162840" stroke="#8BA3BC" stroke-width="1.5"/><circle cx="26" cy="26" r="8" fill="#1A3A5C"/><circle cx="26" cy="26" r="3" fill="#8BA3BC"/><path d="M26 26 Q30 16 26 10" stroke="#8BA3BC" stroke-width="2" stroke-linecap="round" fill="none"/><path d="M26 26 Q36 26 42 22" stroke="#8BA3BC" stroke-width="2" stroke-linecap="round" fill="none"/><path d="M26 26 Q22 36 26 42" stroke="#8BA3BC" stroke-width="2" stroke-linecap="round" fill="none"/><path d="M26 26 Q16 26 10 30" stroke="#8BA3BC" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`
+                    }
+                ],
+                feedback: {
+                    correct: 'Processador encaixado! O socket LGA/AM5 da placa-mãe tem um padrão de pinos específico. O processador deve ser encaixado com cuidado, alinhando os pinos corretamente.',
+                    wrong: 'Esse componente não vai no Socket CPU. O socket é reservado exclusivamente para o processador, que deve ser encaixado com muito cuidado para não dobrar os pinos.'
+                }
+            },
+            {
+                id: 'ram',
+                slotId: 'slot-ram',
+                placedId: 'placed-ram',
+                highlight: '#4A9EE0',
+                instruction: 'Encaixe a Memória RAM nos Slots DDR',
+                hint: 'Os slots de RAM ficam ao lado do socket da CPU. Preste atenção na trava — ela deve clicar ao encaixar.',
+                correct: 1,
+                options: [
+                    {
+                        name: 'SSD M.2', color: '#F7732A',
+                        svg: `<svg viewBox="0 0 52 52" fill="none"><rect x="6" y="18" width="40" height="16" rx="3" fill="#162840" stroke="#F7732A" stroke-width="1.5"/><rect x="9" y="21" width="10" height="10" rx="2" fill="#F7732A" opacity=".8"/><rect x="22" y="21" width="8" height="10" rx="1.5" fill="#F7732A" opacity=".5"/><rect x="33" y="21" width="8" height="10" rx="1.5" fill="#F7732A" opacity=".5"/><rect x="9" y="32" width="4" height="3" rx="1" fill="#FFAD6F" opacity=".6"/><rect x="15" y="32" width="4" height="3" rx="1" fill="#FFAD6F" opacity=".6"/></svg>`
+                    },
+                    {
+                        name: 'Memória RAM', color: '#4A9EE0',
+                        svg: `<svg viewBox="0 0 52 52" fill="none"><rect x="6" y="10" width="40" height="32" rx="3" fill="#4A9EE0"/><rect x="9" y="13" width="8" height="8" rx="1.5" fill="#0D1B2A"/><rect x="20" y="13" width="8" height="8" rx="1.5" fill="#0D1B2A"/><rect x="31" y="13" width="8" height="8" rx="1.5" fill="#0D1B2A"/><rect x="9" y="24" width="8" height="8" rx="1.5" fill="#0D1B2A"/><rect x="20" y="24" width="8" height="8" rx="1.5" fill="#0D1B2A"/><rect x="31" y="24" width="8" height="8" rx="1.5" fill="#0D1B2A"/><rect x="20" y="40" width="6" height="4" rx="1" fill="#162840"/></svg>`
+                    },
+                    {
+                        name: 'Placa de Rede', color: '#1AB078',
+                        svg: `<svg viewBox="0 0 52 52" fill="none"><rect x="4" y="10" width="44" height="32" rx="4" fill="#162840" stroke="#1AB078" stroke-width="1.5"/><rect x="10" y="16" width="20" height="20" rx="3" fill="#0D1B2A" stroke="#1AB078" stroke-width="1"/><rect x="36" y="18" width="8" height="14" rx="2" fill="#0D1B2A" stroke="#1AB078" stroke-width="1"/><circle cx="14" cy="40" r="3" fill="#1AB078" opacity=".8"/><circle cx="22" cy="40" r="3" fill="#FFAD6F" opacity=".8"/></svg>`
+                    },
+                    {
+                        name: 'Fonte ATX', color: '#FFAD6F',
+                        svg: `<svg viewBox="0 0 52 52" fill="none"><rect x="6" y="8" width="40" height="36" rx="5" fill="#162840" stroke="#FFAD6F" stroke-width="1.5"/><rect x="30" y="12" width="12" height="12" rx="2" fill="#0D1B2A"/><line x1="34" y1="12" x2="34" y2="24" stroke="#FFAD6F" stroke-width=".8" opacity=".4"/><line x1="38" y1="12" x2="38" y2="24" stroke="#FFAD6F" stroke-width=".8" opacity=".4"/><rect x="10" y="14" width="5" height="3" rx="1" fill="#F7732A" opacity=".7"/><rect x="10" y="20" width="5" height="3" rx="1" fill="#4A9EE0" opacity=".7"/><rect x="10" y="26" width="5" height="3" rx="1" fill="#FFAD6F" opacity=".7"/><rect x="10" y="32" width="5" height="3" rx="1" fill="#F7732A" opacity=".7"/></svg>`
+                    }
+                ],
+                feedback: {
+                    correct: 'Memória RAM instalada! As travas laterais clicam quando a memória está bem encaixada. Instalar em pares (Dual Channel) melhora o desempenho.',
+                    wrong: 'Esse componente não vai nos slots DDR. Os slots de RAM são aqueles encaixes longos e finos ao lado do socket CPU, e só aceitam módulos de memória RAM.'
+                }
+            },
+            {
+                id: 'pcie',
+                slotId: 'slot-pcie',
+                placedId: 'placed-pcie',
+                highlight: '#4A9EE0',
+                instruction: 'Encaixe a Placa de Vídeo no Slot PCIe x16',
+                hint: 'O slot PCIe x16 é o mais longo da placa-mãe. A placa de vídeo se encaixa nele e precisa de parafuso de fixação no gabinete.',
+                correct: 2,
+                options: [
+                    {
+                        name: 'Processador (CPU)', color: '#F7732A',
+                        svg: `<svg viewBox="0 0 52 52" fill="none"><rect x="8" y="8" width="36" height="36" rx="4" fill="#F7732A" opacity=".9"/><rect x="13" y="13" width="26" height="26" rx="2" fill="#0D1B2A"/><text x="26" y="31" text-anchor="middle" font-size="9" fill="#F7732A" font-family="Syne" font-weight="800">CPU</text></svg>`
+                    },
+                    {
+                        name: 'Memória RAM', color: '#4A9EE0',
+                        svg: `<svg viewBox="0 0 52 52" fill="none"><rect x="6" y="10" width="40" height="32" rx="3" fill="#4A9EE0"/><rect x="9" y="13" width="8" height="8" rx="1.5" fill="#0D1B2A"/><rect x="20" y="13" width="8" height="8" rx="1.5" fill="#0D1B2A"/><rect x="31" y="13" width="8" height="8" rx="1.5" fill="#0D1B2A"/></svg>`
+                    },
+                    {
+                        name: 'Placa de Vídeo', color: '#4A9EE0',
+                        svg: `<svg viewBox="0 0 52 52" fill="none"><rect x="2" y="10" width="48" height="32" rx="4" fill="#162840" stroke="#4A9EE0" stroke-width="1.5"/><rect x="6" y="14" width="22" height="24" rx="3" fill="#0D1B2A" stroke="#4A9EE0" stroke-width="1"/><circle cx="17" cy="26" r="7" fill="#4A9EE0" opacity=".5"/><circle cx="17" cy="26" r="3" fill="#0D1B2A"/><rect x="32" y="14" width="14" height="24" rx="2" fill="#0D1B2A"/><rect x="34" y="16" width="10" height="8" rx="1.5" fill="#4A9EE0" opacity=".5"/><rect x="2" y="38" width="48" height="5" rx="2" fill="#FFAD6F" opacity=".4"/></svg>`
+                    },
+                    {
+                        name: 'Conector SATA', color: '#1AB078',
+                        svg: `<svg viewBox="0 0 52 52" fill="none"><rect x="14" y="8" width="10" height="36" rx="3" fill="#1AB078" opacity=".8"/><rect x="28" y="8" width="10" height="36" rx="3" fill="#1AB078" opacity=".6"/><rect x="15" y="11" width="8" height="5" rx="1.5" fill="#0D1B2A"/><rect x="15" y="19" width="8" height="5" rx="1.5" fill="#0D1B2A"/><rect x="29" y="11" width="8" height="5" rx="1.5" fill="#0D1B2A"/><rect x="29" y="19" width="8" height="5" rx="1.5" fill="#0D1B2A"/></svg>`
+                    }
+                ],
+                feedback: {
+                    correct: 'Placa de vídeo encaixada! O slot PCIe x16 oferece alta velocidade de transferência de dados, ideal para a GPU processar imagens e enviar ao monitor.',
+                    wrong: 'Esse componente não vai no slot PCIe x16. Esse slot largo e comprido é reservado para placas de expansão como a placa de vídeo, placa de captura ou placa de rede dedicada.'
+                }
+            },
+            {
+                id: 'atx',
+                slotId: 'slot-atx',
+                placedId: 'placed-atx',
+                highlight: '#FFAD6F',
+                instruction: 'Conecte o Cabo ATX 24-pin da Fonte',
+                hint: 'Esse é o conector principal de energia da placa-mãe. Tem uma trava lateral que clica quando encaixado corretamente.',
+                correct: 3,
+                options: [
+                    {
+                        name: 'Cabo SATA Power', color: '#1AB078',
+                        svg: `<svg viewBox="0 0 52 52" fill="none"><rect x="8" y="14" width="36" height="24" rx="3" fill="#162840" stroke="#1AB078" stroke-width="1.5"/><rect x="12" y="18" width="6" height="6" rx="1" fill="#1AB078" opacity=".7"/><rect x="21" y="18" width="6" height="6" rx="1" fill="#1AB078" opacity=".5"/><rect x="30" y="18" width="6" height="6" rx="1" fill="#1AB078" opacity=".5"/><rect x="12" y="27" width="6" height="6" rx="1" fill="#FFAD6F" opacity=".5"/><rect x="21" y="27" width="6" height="6" rx="1" fill="#F7732A" opacity=".5"/></svg>`
+                    },
+                    {
+                        name: 'SSD M.2', color: '#F7732A',
+                        svg: `<svg viewBox="0 0 52 52" fill="none"><rect x="6" y="18" width="40" height="16" rx="3" fill="#162840" stroke="#F7732A" stroke-width="1.5"/><rect x="9" y="21" width="10" height="10" rx="2" fill="#F7732A" opacity=".8"/><rect x="22" y="21" width="8" height="10" rx="1.5" fill="#F7732A" opacity=".5"/><rect x="33" y="21" width="8" height="10" rx="1.5" fill="#F7732A" opacity=".5"/></svg>`
+                    },
+                    {
+                        name: 'Cabo de Dados SATA', color: '#8BA3BC',
+                        svg: `<svg viewBox="0 0 52 52" fill="none"><path d="M10 26 Q26 10 42 26" stroke="#8BA3BC" stroke-width="3" stroke-linecap="round" fill="none"/><rect x="6" y="22" width="10" height="8" rx="2" fill="#8BA3BC" opacity=".6"/><rect x="36" y="22" width="10" height="8" rx="2" fill="#8BA3BC" opacity=".6"/></svg>`
+                    },
+                    {
+                        name: 'Conector ATX 24-pin', color: '#FFAD6F',
+                        svg: `<svg viewBox="0 0 52 52" fill="none"><rect x="10" y="10" width="32" height="32" rx="4" fill="#162840" stroke="#FFAD6F" stroke-width="1.5"/><rect x="13" y="13" width="6" height="5" rx="1" fill="#F7732A" opacity=".8"/><rect x="22" y="13" width="6" height="5" rx="1" fill="#4A9EE0" opacity=".8"/><rect x="31" y="13" width="6" height="5" rx="1" fill="#F7732A" opacity=".8"/><rect x="13" y="21" width="6" height="5" rx="1" fill="#FFAD6F" opacity=".8"/><rect x="22" y="21" width="6" height="5" rx="1" fill="#FFAD6F" opacity=".8"/><rect x="31" y="21" width="6" height="5" rx="1" fill="#4A9EE0" opacity=".8"/><rect x="13" y="29" width="6" height="5" rx="1" fill="#F7732A" opacity=".6"/><rect x="22" y="29" width="6" height="5" rx="1" fill="#4A9EE0" opacity=".6"/><rect x="31" y="29" width="6" height="5" rx="1" fill="#FFAD6F" opacity=".6"/><rect x="34" y="18" width="6" height="4" rx="1" fill="#0D1B2A"/></svg>`
+                    }
+                ],
+                feedback: {
+                    correct: 'Cabo ATX 24-pin conectado! Esse é o conector de energia principal. Sem ele, a placa-mãe não liga. A trava lateral garante que ele não se solte durante o uso.',
+                    wrong: 'Esse não é o conector ATX 24-pin. O conector ATX tem 24 fios coloridos (vermelho, preto, laranja, amarelo) e é o maior conector de energia da placa-mãe.'
+                }
+            },
+            {
+                id: 'm2',
+                slotId: 'slot-m2',
+                placedId: 'placed-m2',
+                highlight: '#F7732A',
+                instruction: 'Encaixe o SSD M.2 no Slot M.2',
+                hint: 'O SSD M.2 se encaixa em ângulo (30°) e depois é fixado com um parafuso pequeno na extremidade.',
+                correct: 0,
+                options: [
+                    {
+                        name: 'SSD M.2', color: '#F7732A',
+                        svg: `<svg viewBox="0 0 52 52" fill="none"><rect x="4" y="16" width="44" height="20" rx="3" fill="#162840" stroke="#F7732A" stroke-width="1.5"/><rect x="7" y="19" width="12" height="14" rx="2" fill="#F7732A" opacity=".8"/><rect x="22" y="19" width="10" height="14" rx="1.5" fill="#F7732A" opacity=".5"/><rect x="35" y="19" width="10" height="14" rx="1.5" fill="#F7732A" opacity=".5"/><rect x="6" y="34" width="5" height="3" rx="1" fill="#FFAD6F" opacity=".6"/><rect x="13" y="34" width="5" height="3" rx="1" fill="#FFAD6F" opacity=".6"/><rect x="20" y="34" width="5" height="3" rx="1" fill="#FFAD6F" opacity=".6"/></svg>`
+                    },
+                    {
+                        name: 'Memória RAM', color: '#4A9EE0',
+                        svg: `<svg viewBox="0 0 52 52" fill="none"><rect x="6" y="10" width="40" height="32" rx="3" fill="#4A9EE0"/><rect x="9" y="13" width="8" height="8" rx="1.5" fill="#0D1B2A"/><rect x="20" y="13" width="8" height="8" rx="1.5" fill="#0D1B2A"/><rect x="31" y="13" width="8" height="8" rx="1.5" fill="#0D1B2A"/></svg>`
+                    },
+                    {
+                        name: 'Bateria CMOS', color: '#FFAD6F',
+                        svg: `<svg viewBox="0 0 52 52" fill="none"><circle cx="26" cy="26" r="18" fill="#162840" stroke="#FFAD6F" stroke-width="1.5"/><circle cx="26" cy="26" r="10" fill="#1A3A5C"/><text x="26" y="30" text-anchor="middle" font-size="8" fill="#FFAD6F" font-family="DM Sans" font-weight="600">CR2032</text></svg>`
+                    },
+                    {
+                        name: 'Placa de Rede', color: '#1AB078',
+                        svg: `<svg viewBox="0 0 52 52" fill="none"><rect x="4" y="10" width="44" height="32" rx="4" fill="#162840" stroke="#1AB078" stroke-width="1.5"/><rect x="10" y="16" width="20" height="20" rx="3" fill="#0D1B2A" stroke="#1AB078" stroke-width="1"/><rect x="36" y="18" width="8" height="14" rx="2" fill="#0D1B2A" stroke="#1AB078" stroke-width="1"/><circle cx="14" cy="40" r="3" fill="#1AB078" opacity=".8"/></svg>`
+                    }
+                ],
+                feedback: {
+                    correct: 'SSD M.2 instalado! Ele se conecta diretamente na placa-mãe sem cabo, tornando a transmissão de dados muito mais rápida. O parafuso na ponta o mantém firme.',
+                    wrong: 'Esse componente não vai no slot M.2. O slot M.2 é aquele conector horizontal pequeno que aceita SSDs compactos, sem necessidade de cabos.'
+                }
+            },
+            {
+                id: 'sata',
+                slotId: 'slot-sata',
+                placedId: 'placed-sata',
+                highlight: '#1AB078',
+                instruction: 'Conecte o Cabo SATA nos Conectores SATA',
+                hint: 'Os conectores SATA ficam na borda da placa-mãe. São usados para ligar HDs e SSDs SATA com um cabo em formato de "L".',
+                correct: 1,
+                options: [
+                    {
+                        name: 'Cabo ATX 24-pin', color: '#FFAD6F',
+                        svg: `<svg viewBox="0 0 52 52" fill="none"><rect x="10" y="10" width="32" height="32" rx="4" fill="#162840" stroke="#FFAD6F" stroke-width="1.5"/><rect x="13" y="13" width="6" height="5" rx="1" fill="#F7732A" opacity=".8"/><rect x="22" y="13" width="6" height="5" rx="1" fill="#4A9EE0" opacity=".8"/><rect x="31" y="13" width="6" height="5" rx="1" fill="#FFAD6F" opacity=".8"/><rect x="13" y="21" width="6" height="5" rx="1" fill="#FFAD6F" opacity=".8"/><rect x="22" y="21" width="6" height="5" rx="1" fill="#4A9EE0" opacity=".8"/></svg>`
+                    },
+                    {
+                        name: 'Cabo de Dados SATA', color: '#1AB078',
+                        svg: `<svg viewBox="0 0 52 52" fill="none"><path d="M12 36 L12 20 Q12 12 20 12 L40 12" stroke="#1AB078" stroke-width="4" stroke-linecap="round" fill="none"/><rect x="7" y="32" width="12" height="8" rx="2" fill="#1AB078" opacity=".8"/><rect x="36" y="8" width="8" height="8" rx="2" fill="#1AB078" opacity=".8"/></svg>`
+                    },
+                    {
+                        name: 'Cabo USB Interno', color: '#8BA3BC',
+                        svg: `<svg viewBox="0 0 52 52" fill="none"><path d="M10 40 L10 26 Q10 10 26 10 L42 10" stroke="#8BA3BC" stroke-width="3" stroke-linecap="round" fill="none"/><rect x="5" y="36" width="10" height="8" rx="1.5" fill="#8BA3BC" opacity=".7"/><rect x="38" y="6" width="8" height="8" rx="1.5" fill="#8BA3BC" opacity=".7"/></svg>`
+                    },
+                    {
+                        name: 'Cooler', color: '#8BA3BC',
+                        svg: `<svg viewBox="0 0 52 52" fill="none"><circle cx="26" cy="26" r="18" fill="#162840" stroke="#8BA3BC" stroke-width="1.5"/><circle cx="26" cy="26" r="8" fill="#1A3A5C"/><circle cx="26" cy="26" r="3" fill="#8BA3BC"/><path d="M26 26 Q30 16 26 10" stroke="#8BA3BC" stroke-width="2" stroke-linecap="round" fill="none"/><path d="M26 26 Q36 26 42 22" stroke="#8BA3BC" stroke-width="2" stroke-linecap="round" fill="none"/></svg>`
+                    }
+                ],
+                feedback: {
+                    correct: 'Cabo SATA conectado! O conector em formato de "L" evita encaixes invertidos. Um cabo SATA conecta a placa-mãe ao HD ou SSD SATA, transferindo dados entre eles.',
+                    wrong: 'Esse não é o cabo SATA. O cabo de dados SATA tem um formato em "L" e é fino. Conecta a placa-mãe a HDs e SSDs SATA para transferência de dados.'
+                }
+            }
+        ];
+
+        // ═══════════════════════════════
+        // ESTADO
+        // ═══════════════════════════════
+        let current = 0;
+        let score = 0;
+        let wrong = 0;
+        let answered = false;
+        let results = [];
+
+        // cores dos slots para legenda
+        const slotColors = {
+            cpu: '#F7732A', ram: '#4A9EE0', pcie: '#4A9EE0',
+            atx: '#FFAD6F', m2: '#F7732A', sata: '#1AB078'
+        };
+        const slotNames = {
+            cpu: 'Socket CPU', ram: 'Slots RAM', pcie: 'Slot PCIe x16',
+            atx: 'Conector ATX 24-pin', m2: 'Slot M.2', sata: 'Conectores SATA'
+        };
+
+        // ═══════════════════════════════
+        // INIT
+        // ═══════════════════════════════
+        function init() {
+            buildLegend();
+            renderStep();
+        }
+
+        function buildLegend() {
+            const wrap = document.getElementById('legend-wrap');
+            wrap.innerHTML = '';
+            Object.keys(slotNames).forEach(k => {
+                const item = document.createElement('div');
+                item.className = 'legend-item';
+                item.innerHTML = `<div class="legend-dot" style="background:${slotColors[k]}"></div><span>${slotNames[k]}</span>`;
+                wrap.appendChild(item);
+            });
+        }
+
+        // ═══════════════════════════════
+        // RENDER STEP
+        // ═══════════════════════════════
+        function renderStep() {
+            answered = false;
+            const step = steps[current];
+
+            // badge + progress
+            document.getElementById('badge-step').textContent = `Etapa ${current + 1}/6`;
+            document.getElementById('step-current').textContent = current + 1;
+            document.getElementById('step-score-label').innerHTML = `✓ ${score} &nbsp;✗ ${wrong}`;
+            document.getElementById('progress-fill').style.width = ((current / 6) * 100) + '%';
+
+            // instrução
+            document.getElementById('instr-text').textContent = step.instruction;
+            document.getElementById('instr-hint').textContent = '💡 ' + step.hint;
+
+            // destacar slot na placa-mãe
+            highlightSlot(step);
+
+            // opções
+            renderOptions(step);
+
+            // esconder feedback/botão
+            const fb = document.getElementById('feedback-box');
+            fb.style.display = 'none'; fb.className = 'feedback-box';
+            const btn = document.getElementById('btn-next');
+            btn.classList.remove('show'); btn.style.display = 'none';
+        }
+
+        function highlightSlot(step) {
+            // remove destaques anteriores
+            steps.forEach(s => {
+                const el = document.getElementById(s.slotId);
+                if (el) {
+                    el.querySelectorAll('rect, circle').forEach(r => {
+                        r.style.filter = '';
+                    });
+                }
+            });
+            // aplica brilho no slot atual
+            const el = document.getElementById(step.slotId);
+            if (el) {
+                el.querySelectorAll('rect, circle').forEach(r => {
+                    r.style.filter = `drop-shadow(0 0 6px ${step.highlight})`;
+                });
+            }
+        }
+
+        function renderOptions(step) {
+            const grid = document.getElementById('options-grid');
+            grid.innerHTML = '';
+            // embaralha opções mantendo índice correto
+            const idxs = [0, 1, 2, 3].sort(() => Math.random() - .5);
+            idxs.forEach(origIdx => {
+                const opt = step.options[origIdx];
+                const card = document.createElement('div');
+                card.className = 'opt-card';
+                card.innerHTML = `
+      <div class="opt-card-icon">${opt.svg}</div>
+      <div class="opt-card-name">${opt.name}</div>`;
+                card.addEventListener('click', () => selectOption(card, origIdx, step));
+                grid.appendChild(card);
+            });
+        }
+
+        // ═══════════════════════════════
+        // SELECIONAR
+        // ═══════════════════════════════
+        function selectOption(card, chosenIdx, step) {
+            if (answered) return;
+            answered = true;
+
+            const isCorrect = chosenIdx === step.correct;
+            const cards = document.querySelectorAll('.opt-card');
+
+            card.classList.add(isCorrect ? 'correct' : 'wrong');
+
+            if (!isCorrect) {
+                cards.forEach(c => {
+                    if (c.querySelector('.opt-card-name').textContent === step.options[step.correct].name)
+                        c.classList.add('correct');
+                });
+            }
+            cards.forEach(c => c.classList.add('disabled'));
+
+            if (isCorrect) { score++; placeComponent(step); }
+            else wrong++;
+
+            results.push({ step, correct: isCorrect });
+
+            // feedback
+            const fb = document.getElementById('feedback-box');
+            fb.className = 'feedback-box ' + (isCorrect ? 'correct' : 'wrong');
+            fb.innerHTML = `
+    <div class="feedback-header">
+      <span>${isCorrect ? '✅' : '❌'}</span>
+      <strong>${isCorrect ? 'Encaixe perfeito!' : 'Componente errado!'}</strong>
+    </div>
+    <p class="feedback-text">${isCorrect ? step.feedback.correct : step.feedback.wrong}</p>`;
+            fb.style.display = 'block';
+
+            const btn = document.getElementById('btn-next');
+            btn.textContent = current < 5 ? 'Próxima etapa →' : 'Ver resultado →';
+            btn.classList.add('show');
+            btn.style.display = 'flex';
+        }
+
+        function placeComponent(step) {
+            const el = document.getElementById(step.placedId);
+            if (!el) return;
+            // remove snap-in das classes para reativar animação
+            el.querySelectorAll('.snap-in').forEach(c => {
+                c.classList.remove('snap-in');
+                void c.offsetWidth; // reflow
+                c.classList.add('snap-in');
+            });
+            el.setAttribute('display', '');
+            // adiciona snap-in ao grupo
+            el.style.animation = 'snapIn .45s cubic-bezier(.4,0,.2,1) both';
+        }
+
+        // ═══════════════════════════════
+        // PRÓXIMA ETAPA
+        // ═══════════════════════════════
+        function nextStep() {
+            current++;
+            if (current >= 6) showResult();
+            else {
+                renderStep();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // ═══════════════════════════════
+        // RESULTADO
+        // ═══════════════════════════════
+        function showResult() {
+            document.getElementById('screen-game').style.display = 'none';
+            document.getElementById('screen-result').style.display = 'block';
+            document.getElementById('progress-fill').style.width = '100%';
+            document.getElementById('badge-step').textContent = '6/6';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            document.getElementById('result-num').textContent = score;
+
+            const circumference = 364;
+            const offset = circumference - (score / 6) * circumference;
+            setTimeout(() => {
+                const arc = document.getElementById('score-arc');
+                arc.style.transition = 'stroke-dashoffset 1s cubic-bezier(.4,0,.2,1)';
+                arc.style.strokeDashoffset = offset;
+                arc.style.stroke = score >= 5 ? '#1AB078' : score >= 3 ? '#F7732A' : '#E8445A';
+            }, 100);
+
+            let title, subtitle;
+            if (score === 6) {
+                title = '🏆 Montagem perfeita!';
+                subtitle = 'Você encaixou todos os componentes corretamente. Está pronto para o laboratório real!';
+            } else if (score >= 4) {
+                title = '🎉 Muito bem!';
+                subtitle = 'Quase tudo certo! Revise os barramentos que errou e tente novamente.';
+            } else if (score >= 2) {
+                title = '💪 Continue praticando!';
+                subtitle = 'Você está aprendendo. Refaça a montagem prestando atenção nas dicas de cada slot.';
+            } else {
+                title = '📚 Vamos estudar mais!';
+                subtitle = 'Não desanime! Revise os barramentos da placa-mãe no material da disciplina e tente de novo.';
+            }
+            document.getElementById('result-title').textContent = title;
+            document.getElementById('result-subtitle').textContent = subtitle;
+
+            const list = document.getElementById('breakdown-list');
+            list.innerHTML = '';
+            results.forEach((r, i) => {
+                const row = document.createElement('div');
+                row.className = 'breakdown-row';
+                row.innerHTML = `
+      <div class="breakdown-icon">${r.step.options[r.step.correct].svg}</div>
+      <div class="breakdown-info">
+        <div class="breakdown-name">${r.step.options[r.step.correct].name}</div>
+        <div class="breakdown-slot">${slotNames[r.step.id]}</div>
+      </div>
+      <span class="breakdown-badge ${r.correct ? 'ok' : 'err'}">${r.correct ? '✓ Certo' : '✗ Errou'}</span>`;
+                list.appendChild(row);
+            });
+        }
+
+        // ═══════════════════════════════
+        // RESET / NAV
+        // ═══════════════════════════════
+        function restartGame() {
+            current = 0; score = 0; wrong = 0; answered = false; results = [];
+            // esconde todos os placed
+            steps.forEach(s => {
+                const el = document.getElementById(s.placedId);
+                if (el) el.setAttribute('display', 'none');
+            });
+            document.getElementById('screen-result').style.display = 'none';
+            document.getElementById('screen-game').style.display = 'block';
+            renderStep();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function goBack() { history.back(); }
+        function goHome() { window.location.href = 'index.html'; }
+
+        // start
+        init();
+    </script>
+</body>
+
+</html>
