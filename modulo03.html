@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechQuest — Módulo 3: Diagnóstico</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --blue-dark: #0D1B2A;
+            --blue-mid: #1A3A5C;
+            --blue: #1E6FBF;
+            --blue-light: #4A9EE0;
+            --orange: #F7732A;
+            --orange-light: #FFAD6F;
+            --white: #F4F8FF;
+            --gray: #8BA3BC;
+            --card-bg: #162840;
+            --green: #1AB078;
+            --red: #E8445A;
+            --yellow: #F5C842;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent
+        }
+
+        body {
+            background: var(--blue-dark);
+            color: var(--white);
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden
+        }
+
+        .bg-pattern {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background-image: radial-gradient(circle at 80% 10%, rgba(30, 111, 191, .25) 0%, transparent 50%), radial-gradient(circle at 10% 80%, rgba(247, 115, 42, .12) 0%, transparent 45%)
+        }
+
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background-image: linear-gradient(rgba(74, 158, 224, .06) 1px, transparent 1px), linear-gradient(90deg, rgba(74, 158, 224, .06) 1px, transparent 1px);
+            background-size: 32px 32px
+        }
+
+        .page {
+            position: relative;
+            z-index: 1;
+            max-width: 430px;
+            margin: 0 auto;
+            padding: 0 20px 56px
+        }
+
+        /* TOPBAR */
+        .topbar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 0 12px
+        }
+
+        .btn-back {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: var(--card-bg);
+            border: 1px solid rgba(74, 158, 224, .15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: background .15s
+        }
+
+        .btn-back:active {
+            background: var(--blue-mid)
+        }
+
+        .topbar-info {
+            flex: 1
+        }
+
+        .topbar-label {
+            font-size: 11px;
+            color: var(--gray);
+            letter-spacing: 1px;
+            text-transform: uppercase
+        }
+
+        .topbar-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 15px;
+            font-weight: 700
+        }
+
+        .topbar-badge {
+            font-size: 11px;
+            font-weight: 600;
+            background: rgba(232, 68, 90, .15);
+            color: #ff8fa3;
+            border: 1px solid rgba(232, 68, 90, .3);
+            padding: 4px 10px;
+            border-radius: 20px
+        }
+
+        /* PROGRESS */
+        .progress-wrap {
+            margin-bottom: 18px
+        }
+
+        .progress-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--gray);
+            margin-bottom: 7px
+        }
+
+        .progress-meta strong {
+            color: var(--white)
+        }
+
+        .progress-track {
+            height: 6px;
+            background: var(--card-bg);
+            border-radius: 99px;
+            overflow: hidden
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--red), #ff8fa3);
+            border-radius: 99px;
+            transition: width .5s cubic-bezier(.4, 0, .2, 1)
+        }
+
+        /* CASO CARD */
+        .case-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(232, 68, 90, .2);
+            border-radius: 20px;
+            padding: 18px;
+            margin-bottom: 14px;
+            animation: fadeUp .35s ease both
+        }
+
+        .case-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 12px
+        }
+
+        .case-num {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            color: var(--red);
+            text-transform: uppercase
+        }
+
+        .case-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 18px;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 10px
+        }
+
+        .case-tag {
+            font-size: 10px;
+            font-weight: 600;
+            padding: 3px 9px;
+            border-radius: 99px;
+            background: rgba(232, 68, 90, .1);
+            color: #ff8fa3;
+            border: 1px solid rgba(232, 68, 90, .2);
+            white-space: nowrap;
+            flex-shrink: 0
+        }
+
+        /* RELATO */
+        .relato-wrap {
+            background: rgba(13, 27, 42, .6);
+            border-radius: 12px;
+            padding: 14px;
+            border-left: 3px solid var(--orange)
+        }
+
+        .relato-label {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            color: var(--orange);
+            text-transform: uppercase;
+            margin-bottom: 6px
+        }
+
+        .relato-text {
+            font-size: 13px;
+            color: var(--white);
+            line-height: 1.65;
+            font-style: italic
+        }
+
+        /* FASE LABEL */
+        .phase-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--gray);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin: 18px 0 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .phase-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(74, 158, 224, .12)
+        }
+
+        /* TESTES */
+        .test-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 14px
+        }
+
+        .test-card {
+            background: var(--card-bg);
+            border: 1.5px solid rgba(74, 158, 224, .12);
+            border-radius: 16px;
+            overflow: hidden;
+            animation: fadeUp .3s ease both
+        }
+
+        /* estado: pendente */
+        .test-btn {
+            width: 100%;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-align: left;
+            color: var(--white)
+        }
+
+        .test-btn:active {
+            background: rgba(74, 158, 224, .06)
+        }
+
+        .test-index {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            background: rgba(74, 158, 224, .1);
+            border: 1px solid rgba(74, 158, 224, .2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Syne', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--blue-light);
+            flex-shrink: 0
+        }
+
+        .test-desc {
+            font-size: 13px;
+            font-weight: 500;
+            line-height: 1.4;
+            flex: 1
+        }
+
+        .test-arrow {
+            flex-shrink: 0;
+            opacity: .5
+        }
+
+        /* estado: revelado */
+        .test-card.efficient {
+            border-color: var(--green)
+        }
+
+        .test-card.inefficient {
+            border-color: var(--red)
+        }
+
+        .test-card.efficient .test-index {
+            background: rgba(26, 176, 120, .2);
+            border-color: var(--green);
+            color: var(--green)
+        }
+
+        .test-card.inefficient .test-index {
+            background: rgba(232, 68, 90, .15);
+            border-color: var(--red);
+            color: var(--red)
+        }
+
+        .test-result {
+            padding: 0 16px 14px;
+            display: none;
+            animation: fadeUp .25s ease both
+        }
+
+        .test-result.show {
+            display: block
+        }
+
+        .result-box {
+            background: rgba(13, 27, 42, .5);
+            border-radius: 10px;
+            padding: 11px 13px;
+            margin-bottom: 8px
+        }
+
+        .result-label {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 4px
+        }
+
+        .efficient .result-label {
+            color: var(--green)
+        }
+
+        .inefficient .result-label {
+            color: var(--red)
+        }
+
+        .result-text {
+            font-size: 12px;
+            color: var(--white);
+            line-height: 1.55
+        }
+
+        .feedback-text {
+            font-size: 12px;
+            color: var(--gray);
+            line-height: 1.55;
+            font-style: italic
+        }
+
+        .efficiency-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 99px;
+            margin-bottom: 8px
+        }
+
+        .efficient .efficiency-badge {
+            background: rgba(26, 176, 120, .15);
+            color: var(--green);
+            border: 1px solid rgba(26, 176, 120, .3)
+        }
+
+        .inefficient .efficiency-badge {
+            background: rgba(232, 68, 90, .1);
+            color: var(--red);
+            border: 1px solid rgba(232, 68, 90, .3)
+        }
+
+        /* SUBSTITUIÇÃO */
+        .sub-section {
+            animation: fadeUp .35s ease both
+        }
+
+        .sub-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 14px
+        }
+
+        .sub-opt {
+            background: var(--card-bg);
+            border: 1.5px solid rgba(74, 158, 224, .15);
+            border-radius: 14px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: border-color .15s, background .15s, transform .1s;
+            user-select: none
+        }
+
+        .sub-opt:active {
+            transform: scale(.99)
+        }
+
+        .sub-opt:hover {
+            border-color: rgba(74, 158, 224, .35);
+            background: rgba(30, 111, 191, .1)
+        }
+
+        .sub-opt.correct {
+            border-color: var(--green);
+            background: rgba(26, 176, 120, .1);
+            animation: pulse-green .35s ease
+        }
+
+        .sub-opt.wrong {
+            border-color: var(--red);
+            background: rgba(232, 68, 90, .08);
+            animation: shake .3s ease
+        }
+
+        .sub-opt.disabled {
+            pointer-events: none;
+            opacity: .45
+        }
+
+        .sub-opt.correct.disabled {
+            opacity: 1
+        }
+
+        .sub-opt-letter {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            flex-shrink: 0;
+            background: rgba(74, 158, 224, .1);
+            border: 1px solid rgba(74, 158, 224, .2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Syne', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--blue-light);
+            transition: background .15s, color .15s
+        }
+
+        .sub-opt.correct .sub-opt-letter {
+            background: var(--green);
+            color: #fff;
+            border-color: var(--green)
+        }
+
+        .sub-opt.wrong .sub-opt-letter {
+            background: var(--red);
+            color: #fff;
+            border-color: var(--red)
+        }
+
+        .sub-opt-text {
+            font-size: 13px;
+            font-weight: 500;
+            line-height: 1.35;
+            flex: 1
+        }
+
+        /* FEEDBACK SUBSTITUIÇÃO */
+        .sub-feedback {
+            border-radius: 14px;
+            padding: 14px 16px;
+            margin-bottom: 14px;
+            display: none;
+            animation: fadeUp .3s ease both
+        }
+
+        .sub-feedback.correct {
+            background: rgba(26, 176, 120, .1);
+            border: 1px solid rgba(26, 176, 120, .3)
+        }
+
+        .sub-feedback.wrong {
+            background: rgba(232, 68, 90, .08);
+            border: 1px solid rgba(232, 68, 90, .3)
+        }
+
+        .sub-feedback-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px
+        }
+
+        .sub-feedback-header strong {
+            font-family: 'Syne', sans-serif;
+            font-size: 14px;
+            font-weight: 700
+        }
+
+        .sub-feedback.correct .sub-feedback-header strong {
+            color: var(--green)
+        }
+
+        .sub-feedback.wrong .sub-feedback-header strong {
+            color: var(--red)
+        }
+
+        .sub-feedback-text {
+            font-size: 13px;
+            color: var(--gray);
+            line-height: 1.6
+        }
+
+        /* TESTE DE FUNCIONAMENTO */
+        .func-section {
+            background: var(--card-bg);
+            border: 1px solid rgba(245, 200, 66, .2);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 14px;
+            animation: fadeUp .35s ease both
+        }
+
+        .func-label {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            color: var(--yellow);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px
+        }
+
+        .func-text {
+            font-size: 13px;
+            color: var(--white);
+            line-height: 1.6;
+            margin-bottom: 12px
+        }
+
+        .func-opts {
+            display: flex;
+            flex-direction: column;
+            gap: 8px
+        }
+
+        .func-opt {
+            background: rgba(13, 27, 42, .5);
+            border: 1.5px solid rgba(74, 158, 224, .12);
+            border-radius: 11px;
+            padding: 12px 14px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: border-color .15s, background .15s
+        }
+
+        .func-opt:active {
+            transform: scale(.99)
+        }
+
+        .func-opt:hover {
+            border-color: rgba(74, 158, 224, .3)
+        }
+
+        .func-opt.correct {
+            border-color: var(--green);
+            background: rgba(26, 176, 120, .1);
+            color: var(--green);
+            font-weight: 600
+        }
+
+        .func-opt.wrong {
+            border-color: var(--red);
+            background: rgba(232, 68, 90, .08);
+            color: var(--red)
+        }
+
+        .func-opt.disabled {
+            pointer-events: none;
+            opacity: .45
+        }
+
+        .func-opt.correct.disabled {
+            opacity: 1
+        }
+
+        /* BOTÕES */
+        .btn-primary {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            background: var(--orange);
+            color: #fff;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            padding: 15px;
+            border-radius: 14px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(247, 115, 42, .35);
+            transition: transform .15s;
+            margin-bottom: 10px
+        }
+
+        .btn-primary:active {
+            transform: scale(.98)
+        }
+
+        .btn-next {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            background: var(--blue);
+            color: #fff;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 14px;
+            border-radius: 13px;
+            border: none;
+            cursor: pointer;
+            transition: transform .15s
+        }
+
+        .btn-next:active {
+            transform: scale(.98)
+        }
+
+        .btn-next.show {
+            display: flex;
+            animation: fadeUp .3s ease both
+        }
+
+        .btn-secondary {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            background: var(--card-bg);
+            color: var(--white);
+            border: 1.5px solid rgba(74, 158, 224, .2);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 14px;
+            border-radius: 13px;
+            cursor: pointer;
+            transition: background .15s
+        }
+
+        .btn-secondary:active {
+            background: var(--blue-mid)
+        }
+
+        /* RESULTADO FINAL */
+        #screen-result {
+            display: none;
+            animation: fadeUp .4s ease both
+        }
+
+        .result-hero {
+            text-align: center;
+            padding: 24px 0
+        }
+
+        .result-score-ring {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            margin: 0 auto 20px
+        }
+
+        .result-score-ring svg {
+            position: absolute;
+            inset: 0;
+            transform: rotate(-90deg)
+        }
+
+        .result-score-inner {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center
+        }
+
+        .result-score-num {
+            font-family: 'Syne', sans-serif;
+            font-size: 38px;
+            font-weight: 800;
+            line-height: 1
+        }
+
+        .result-score-label {
+            font-size: 11px;
+            color: var(--gray);
+            margin-top: 2px
+        }
+
+        .result-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 8px
+        }
+
+        .result-subtitle {
+            font-size: 14px;
+            color: var(--gray);
+            line-height: 1.6;
+            max-width: 280px;
+            margin: 0 auto 24px
+        }
+
+        .result-breakdown {
+            background: var(--card-bg);
+            border: 1px solid rgba(74, 158, 224, .12);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 20px
+        }
+
+        .breakdown-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px
+        }
+
+        .breakdown-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 9px 0;
+            border-bottom: 1px solid rgba(74, 158, 224, .06)
+        }
+
+        .breakdown-row:last-child {
+            border-bottom: none
+        }
+
+        .breakdown-case {
+            font-size: 13px;
+            flex: 1;
+            padding-right: 8px
+        }
+
+        .breakdown-badges {
+            display: flex;
+            gap: 5px;
+            flex-shrink: 0
+        }
+
+        .breakdown-badge {
+            font-size: 10px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 99px
+        }
+
+        .breakdown-badge.ok {
+            background: rgba(26, 176, 120, .15);
+            color: var(--green)
+        }
+
+        .breakdown-badge.err {
+            background: rgba(232, 68, 90, .12);
+            color: var(--red)
+        }
+
+        /* ANIMAÇÕES */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(14px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        @keyframes pulse-green {
+            0% {
+                box-shadow: 0 0 0 0 rgba(26, 176, 120, .5)
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(26, 176, 120, 0)
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(26, 176, 120, 0)
+            }
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0)
+            }
+
+            25% {
+                transform: translateX(-6px)
+            }
+
+            75% {
+                transform: translateX(6px)
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-pattern"></div>
+    <div class="bg-grid"></div>
+
+    <div class="page">
+
+        <!-- TOPBAR -->
+        <div class="topbar">
+            <div class="btn-back" onclick="goBack()">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                    <path d="M11 4l-5 5 5 5" stroke="#4A9EE0" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+            </div>
+            <div class="topbar-info">
+                <div class="topbar-label">Módulo 03</div>
+                <div class="topbar-title">Diagnóstico de Falhas</div>
+            </div>
+            <div class="topbar-badge" id="badge-case">Caso 1/12</div>
+        </div>
+
+        <!-- PROGRESS -->
+        <div class="progress-wrap">
+            <div class="progress-meta">
+                <span>Caso <strong id="case-current">1</strong> de <strong>12</strong></span>
+                <span id="case-score-label">✓ 0 &nbsp;✗ 0</span>
+            </div>
+            <div class="progress-track">
+                <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+            </div>
+        </div>
+
+        <!-- TELA JOGO -->
+        <div id="screen-game"></div>
+
+        <!-- TELA RESULTADO -->
+        <div id="screen-result">
+            <div class="result-hero">
+                <div class="result-score-ring">
+                    <svg width="140" height="140" viewBox="0 0 140 140">
+                        <circle cx="70" cy="70" r="58" stroke="#162840" stroke-width="12" fill="none" />
+                        <circle cx="70" cy="70" r="58" id="score-arc" stroke="#E8445A" stroke-width="12" fill="none"
+                            stroke-linecap="round" stroke-dasharray="364" stroke-dashoffset="364" />
+                    </svg>
+                    <div class="result-score-inner">
+                        <div class="result-score-num" id="result-num">0</div>
+                        <div class="result-score-label">de 12 acertos</div>
+                    </div>
+                </div>
+                <h2 class="result-title" id="result-title"></h2>
+                <p class="result-subtitle" id="result-subtitle"></p>
+            </div>
+            <div class="result-breakdown">
+                <div class="breakdown-title">Resumo dos diagnósticos</div>
+                <div id="breakdown-list"></div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+                <button class="btn-primary" onclick="restartGame()">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M3 8a5 5 0 1 1 1.5 3.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" />
+                        <path d="M3 5v3h3" stroke="#fff" stroke-width="1.8" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                    Refazer diagnósticos
+                </button>
+                <button class="btn-secondary" onclick="goHome()">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M2 6.5L8 2l6 4.5V14H10v-4H6v4H2z" stroke="#4A9EE0" stroke-width="1.6"
+                            stroke-linejoin="round" fill="none" />
+                    </svg>
+                    Voltar ao início
+                </button>
+            </div>
+        </div>
+
+    </div><!-- /page -->
+
+    <script>
+        // ════════════════════════════════════════
+        // BANCO DE CENÁRIOS
+        // ════════════════════════════════════════
+        const cenarios = [
+            {
+                id: 1, titulo: "O Computador Zumbi",
+                ementa: "Identificação de hardware / Diagnóstico de falhas",
+                relato: "Eu aperto o botão, as luzes acendem, os ventiladores barulhentos giram, mas a tela fica toda preta.",
+                testes: [
+                    { id: "T1", descricao: "Verificar cabos do monitor e tomada.", resultado: "Cabos firmes. Monitor exibe mensagem 'Sem Sinal'.", feedback: "Boa prática inicial. Elimina problemas de alimentação externa.", eficiente: true },
+                    { id: "T2", descricao: "Ligar o computador sem os pentes de RAM.", resultado: "A placa-mãe emite bipes contínuos e longos (ou acende o LED 'DRAM' na placa).", feedback: "Excelente. Confirma que o processador e a placa-mãe estão processando instruções básicas.", eficiente: true },
+                    { id: "T3", descricao: "Testar um pente de memória por vez em slots diferentes.", resultado: "Com o Pente 1 no Slot 2, o computador dá vídeo. Com o Pente 2, a tela continua preta.", feedback: "Perfeito. Isolou o componente defeituoso com precisão.", eficiente: true }
+                ],
+                substituicao: { opcoes: [{ id: "A", texto: "Novo cabo HDMI" }, { id: "B", texto: "Módulo de Memória RAM DDR4" }, { id: "C", texto: "Placa de Vídeo Dedicada" }], gabarito: "B", feedback_gabarito: "A RAM defeituosa é o componente isolado pelos testes. Substitua pelo mesmo tipo e frequência da memória original para garantir compatibilidade com a placa-mãe." },
+                teste_funcionamento: { correto: "Iniciar o sistema operacional e executar uma ferramenta de diagnóstico de memória (Windows Memory Diagnostic) para garantir a estabilidade do novo módulo.", distratores: ["Formatar o HD e reinstalar o Windows para verificar se o erro some.", "Ligar o PC e abrir o navegador para ver se carrega normalmente."] }
+            },
+            {
+                id: 2, titulo: "O Apagão Repentino",
+                ementa: "Diagnóstico de falhas / Substituição de peças",
+                relato: "Estou jogando ou abrindo programas pesados e o computador simplesmente apaga do nada. Não dá tela azul, só morre.",
+                testes: [
+                    { id: "T1", descricao: "Instalar software de monitoramento de temperatura (HWMonitor/CoreTemp).", resultado: "Temperatura do processador atinge 100°C logo antes de o PC desligar.", feedback: "Diagnóstico eficiente. Identificou o sintoma térmico sem abrir o hardware.", eficiente: true },
+                    { id: "T2", descricao: "Trocar a fonte de alimentação imediatamente.", resultado: "O problema persiste após 15 minutos de uso pesado.", feedback: "Ineficiente e caro. Trocar peças sem testar variáveis gera desperdício de tempo.", eficiente: false },
+                    { id: "T3", descricao: "Abrir o gabinete e verificar a fixação do cooler.", resultado: "Duas travas do cooler do processador estão soltas e a pasta térmica virou pó.", feedback: "Correto. Identificou a causa física do isolamento térmico deficiente.", eficiente: true }
+                ],
+                substituicao: { opcoes: [{ id: "A", texto: "Fonte de Alimentação 500W" }, { id: "B", texto: "Pasta Térmica Nova + Limpeza" }, { id: "C", texto: "Cooler de Gabinete Extra" }], gabarito: "B", feedback_gabarito: "A pasta térmica ressecada é a causa do isolamento térmico. Limpe a superfície do processador e do cooler com álcool isopropílico, aplique uma camada fina de pasta nova e reencaixe o cooler com todas as travas firmes." },
+                teste_funcionamento: { correto: "Rodar um teste de estresse no processador (Prime95) por 10 minutos monitorando a temperatura, garantindo que ela não ultrapasse os limites seguros.", distratores: ["Ligar o PC e abrir um jogo pesado por 2 minutos para ver se desliga.", "Reiniciar o computador e verificar se a BIOS mostra algum alerta."] }
+            },
+            {
+                id: 3, titulo: "O Carregamento Infinito",
+                ementa: "Diagnóstico de falhas / Substituição de peças",
+                relato: "Meu computador demora 10 minutos para ligar. Quando abre o navegador, ele trava todo e o gerenciador de tarefas mostra o disco em 100%.",
+                testes: [
+                    { id: "T1", descricao: "Formatar o sistema operacional.", resultado: "A instalação demora 4 horas para terminar e a lentidão retorna no dia seguinte.", feedback: "Pouco eficiente. Problemas físicos de hardware não são resolvidos permanentemente por software.", eficiente: false },
+                    { id: "T2", descricao: "Executar teste de saúde do disco via software (CrystalDiskInfo).", resultado: "Status do disco reportado como 'Alerta' ou 'Crítico' com milhares de setores realocados.", feedback: "Excelente. Uso de ferramentas de diagnóstico de telemetria poupa esforço físico.", eficiente: true },
+                    { id: "T3", descricao: "Desfragmentar o disco.", resultado: "O processo trava em 12% e o computador congela.", feedback: "Perigoso. Forçar um disco rígido danificado mecanicamente acelera sua falha total.", eficiente: false }
+                ],
+                substituicao: { opcoes: [{ id: "A", texto: "Disco Rígido Novo de 1TB" }, { id: "B", texto: "Unidade de Estado Sólido (SSD NVMe)" }, { id: "C", texto: "Licença Nova do Windows" }], gabarito: "B", feedback_gabarito: "O SSD NVMe é a escolha recomendada — e não apenas o equivalente — pois elimina as partes mecânicas que causaram o problema. Um novo HD mecânico resolveria o defeito imediato, mas o SSD oferece velocidade até 10x maior, maior durabilidade e sem risco de bad sectors mecânicos. Na prática profissional, substituir um HD antigo por SSD é o padrão do mercado." },
+                teste_funcionamento: { correto: "Medir o tempo de boot do sistema operacional com a nova unidade instalada, assegurando que a inicialização ocorra em poucos segundos e sem travamentos.", distratores: ["Abrir o gerenciador de tarefas e ver se o uso do disco caiu abaixo de 100%.", "Desfragmentar o novo SSD para garantir que está funcionando corretamente."] }
+            },
+            {
+                id: 4, titulo: "O Loop da Morte",
+                ementa: "Diagnóstico de falhas / Testes de funcionamento",
+                relato: "O computador liga, aparece a logo da marca da placa-mãe, e logo em seguida ele desliga e liga sozinho de novo. Fica nisso para sempre.",
+                testes: [
+                    { id: "T1", descricao: "Entrar na BIOS do sistema.", resultado: "A BIOS abre estável, mas a linha de 12V exibe oscilações caindo para 11.2V.", feedback: "Excelente técnica. A BIOS consome pouca energia, permitindo checar os sensores antes do boot.", eficiente: true },
+                    { id: "T2", descricao: "Desconectar todos os periféricos USB, HDs secundários e drives de DVD.", resultado: "O computador consegue passar da tela de logo uma vez, mas desliga ao tentar iniciar o Windows.", feedback: "Ótimo teste de isolamento. Reduzir a carga elétrica confirmou a suspeita sobre o sistema de energia.", eficiente: true },
+                    { id: "T3", descricao: "Atualizar a BIOS da placa-mãe.", resultado: "O computador desliga no meio do processo de atualização, corrompendo a placa-mãe.", feedback: "Erro grave. Nunca atualize firmware em um sistema com alimentação elétrica instável.", eficiente: false }
+                ],
+                substituicao: { opcoes: [{ id: "A", texto: "Nova Placa-mãe" }, { id: "B", texto: "Cabo de força novo" }, { id: "C", texto: "Fonte de Alimentação com Certificação 80 Plus" }], gabarito: "C", feedback_gabarito: "A fonte instável é a causa raiz confirmada pelos testes de tensão. A certificação 80 Plus garante eficiência energética e estabilidade nas linhas de alimentação sob carga, evitando quedas de tensão durante o boot." },
+                teste_funcionamento: { correto: "Ligar o equipamento, monitorar as tensões elétricas via software sob carga de trabalho e verificar a estabilidade do carregamento completo do Windows.", distratores: ["Ligar o PC e aguardar 5 minutos para ver se reinicia sozinho.", "Reinstalar o Windows e testar se o loop persiste."] }
+            },
+            {
+                id: 5, titulo: "O Mistério do Clique Único",
+                ementa: "Montagem física / Diagnóstico de falhas",
+                relato: "Acabei de montar o computador sozinho. Quando aperto o botão de ligar, os LEDs dão um único estalo piscando por meio segundo e tudo morre. Só se eu tirar da tomada e colocar de volta.",
+                testes: [
+                    { id: "T1", descricao: "Remover a placa de vídeo e tentar ligar apenas com o vídeo integrado.", resultado: "O sintoma persiste exatamente igual (pisca por meio segundo e desliga).", feedback: "Inconclusivo. O curto-circuito não está na trilha de alimentação PCIe da GPU.", eficiente: false },
+                    { id: "T2", descricao: "Realizar a montagem de bancada (componentes essenciais fora do gabinete, sobre superfície isolante).", resultado: "O computador liga normalmente, dá vídeo e permanece ligado estável.", feedback: "Excelente! Técnica de isolamento de bancada. Prova que o problema está na interação física com o gabinete.", eficiente: true },
+                    { id: "T3", descricao: "Substituir a fonte de alimentação por uma de maior potência.", resultado: "O comportamento de desligamento imediato se repete.", feedback: "Ineficiente. O desligamento ocorre por proteção ativa, não por falta de potência da fonte.", eficiente: false }
+                ],
+                substituicao: { opcoes: [{ id: "A", texto: "Substituir a placa-mãe queimada por uma nova." }, { id: "B", texto: "Instalar os parafusos espaçadores de latão no gabinete antes de fixar a placa-mãe." }, { id: "C", texto: "Trocar o botão Power do painel frontal do gabinete." }], gabarito: "B", feedback_gabarito: "Os espaçadores de latão são obrigatórios na montagem. Eles elevam a placa-mãe alguns milímetros acima do chassi metálico, evitando que as trilhas condutoras da parte inferior da placa toquem o metal do gabinete e causem curto-circuito." },
+                teste_funcionamento: { correto: "Montar o PC no gabinete com os espaçadores, ligar o sistema e rodar um teste de estresse de estabilidade (AIDA64) por 10 minutos.", distratores: ["Ligar o PC dentro do gabinete e observar se os LEDs piscam normalmente.", "Checar o gerenciador de dispositivos para ver se há algum conflito de hardware."] }
+            },
+            {
+                id: 6, titulo: "Corrupção de Dados em Massa",
+                ementa: "Diagnóstico de falhas / Substituição de peças",
+                relato: "Meu computador reconhece o HD, mas quando tento copiar arquivos grandes, o Windows exibe Tela Azul com erro 'DATA_BUS_ERROR' ou a cópia congela no meio.",
+                testes: [
+                    { id: "T1", descricao: "Checar atributos S.M.A.R.T. do disco e verificar a linha 'UltraDMA CRC Error Count'.", resultado: "O valor da linha de erros CRC está extremamente alto e subindo a cada tentativa de uso.", feedback: "Perfeito. Erros de CRC indicam quase sempre corrupção no trajeto entre o disco e a placa-mãe, apontando para o cabo.", eficiente: true },
+                    { id: "T2", descricao: "Trocar o conector de energia da fonte (SATA Power) ligado ao HD.", resultado: "O erro permanece idêntico durante a transferência de arquivos.", feedback: "Incorreto. Problemas de energia fariam o HD desligar, não corromper pacotes de dados na transmissão.", eficiente: false },
+                    { id: "T3", descricao: "Substituir o cabo SATA de dados por um novo e testar em outra porta SATA da placa-mãe.", resultado: "As transferências de arquivos ocorrem em velocidade máxima e sem erros.", feedback: "Excelente isolamento. Substituiu a via de tráfego de dados isolando o conector suspeito.", eficiente: true }
+                ],
+                substituicao: { opcoes: [{ id: "A", texto: "Trocar o HD por uma unidade de armazenamento nova." }, { id: "B", texto: "Substituir o cabo SATA de dados por um cabo novo com travas metálicas." }, { id: "C", texto: "Mudar a configuração do disco de AHCI para IDE na BIOS." }], gabarito: "B", feedback_gabarito: "O cabo SATA de dados é o elo fraco confirmado pelos testes. Cabos com travas metálicas evitam que o conector se solte por vibração, garantindo a integridade dos pacotes de dados transmitidos entre o disco e a placa-mãe." },
+                teste_funcionamento: { correto: "Realizar a cópia de um arquivo de 10GB e verificar se o contador de erros UltraDMA do S.M.A.R.T. parou de subir.", distratores: ["Reiniciar o PC e tentar copiar o arquivo novamente para ver se o erro some.", "Formatar o HD com o novo cabo conectado e reinstalar o Windows."] }
+            },
+            {
+                id: 7, titulo: "O Frio Enganoso",
+                ementa: "Montagem física / Organização interna de dispositivos",
+                relato: "Montei um Water Cooler novo. Agora o computador trava e desliga em menos de 2 minutos com qualquer jogo simples. O ar que sai do radiador está frio.",
+                testes: [
+                    { id: "T1", descricao: "Aumentar a velocidade das ventoinhas do radiador para 100% através da BIOS.", resultado: "As ventoinhas fazem muito barulho, mas o processador continua atingindo 95°C inativo.", feedback: "Ineficiente. Mover mais ar pelo radiador não adianta se o calor do chip não consegue passar para o bloco de cobre.", eficiente: false },
+                    { id: "T2", descricao: "Tocar nas duas mangueiras do Water Cooler com o computador ligado.", resultado: "Uma mangueira perto do bloco está fervendo e a outra está completamente fria; o radiador permanece gelado.", feedback: "Ótimo diagnóstico físico. Indica que o fluido não está circulando calor — barreira térmica total no bloco.", eficiente: true },
+                    { id: "T3", descricao: "Remover o bloco do cooler do processador para inspecionar a pegada da pasta térmica.", resultado: "A pasta térmica foi esmagada sobre uma película plástica que diz 'REMOVE BEFORE INSTALLATION'.", feedback: "Diagnóstico certeiro! Um erro clássico de montagem física que atua como um isolante térmico perfeito.", eficiente: true }
+                ],
+                substituicao: { opcoes: [{ id: "A", texto: "Remover o plástico protetor, limpar a superfície, aplicar nova pasta térmica e reinstalar o cooler." }, { id: "B", texto: "Trocar o Water Cooler por um Air Cooler convencional." }, { id: "C", texto: "Trocar a bomba do Water Cooler por achar que ela está queimada." }], gabarito: "A", feedback_gabarito: "A solução não exige troca de peça — apenas correção do procedimento de montagem. Remova o plástico protetor da base de cobre, limpe ambas as superfícies com álcool isopropílico, aplique pasta do tamanho de um grão de arroz no centro do processador e reinstale o bloco com pressão uniforme." },
+                teste_funcionamento: { correto: "Executar o benchmark Cinebench por 10 minutos monitorando a temperatura máxima, garantindo que ela estabilize dentro dos limites operacionais (sub-80°C).", distratores: ["Ligar o PC e verificar se o ar do radiador ficou quente após o reparo.", "Abrir o HWMonitor por 1 minuto em repouso e verificar se a temperatura está abaixo de 60°C."] }
+            },
+            {
+                id: 8, titulo: "O Alerta Vermelho",
+                ementa: "Identificação de hardware / Organização interna de cabos",
+                relato: "Meu computador liga elétrico (cooler gira, LEDs acendem), mas não dá vídeo e o LED indicador 'CPU' fica aceso fixo em vermelho na placa-mãe.",
+                testes: [
+                    { id: "T1", descricao: "Retirar a bateria CMOS da placa-mãe por 5 minutos para resetar as configurações de fábrica.", resultado: "O comportamento permanece inalterado com o LED de CPU aceso.", feedback: "Pouco eficiente. O LED de diagnóstico indica falha de hardware, não de configuração de software.", eficiente: false },
+                    { id: "T2", descricao: "Inspecionar visualmente as conexões internas de cabos vindos da fonte de alimentação para a placa-mãe.", resultado: "O conector ATX de 24 pinos está firme, mas o conector EPS de 8 pinos no topo esquerdo está inclinado e fora da trava.", feedback: "Excelente. A inspeção visual detalhada de cabos de força é indispensável na manutenção física de equipamentos.", eficiente: true },
+                    { id: "T3", descricao: "Retirar o processador do socket para verificar se existem pinos tortos.", resultado: "Os pinos do socket estão perfeitamente alinhados, sem danos.", feedback: "Arriscado como primeiro passo. Remover o processador sem antes checar a alimentação básica expõe o socket a danos desnecessários.", eficiente: false }
+                ],
+                substituicao: { opcoes: [{ id: "A", texto: "Trocar o processador por um modelo compatível novo." }, { id: "B", texto: "Desconectar o cabo EPS, verificar os pinos internos e reconectá-lo firmemente até ouvir o clique da trava." }, { id: "C", texto: "Substituir a placa-mãe inteira." }], gabarito: "B", feedback_gabarito: "O cabo EPS 8-pin é a linha de alimentação exclusiva do processador. Sem ele conectado firmemente, a CPU não recebe energia suficiente para executar o POST. Não é necessário substituir nenhuma peça — apenas reconectar o cabo corretamente." },
+                teste_funcionamento: { correto: "Ligar o computador, observar se o LED de diagnóstico 'CPU' apaga, se o sistema realiza o POST com sucesso e entra no Sistema Operacional.", distratores: ["Ligar o PC e aguardar 30 segundos para ver se o LED vermelho apaga sozinho.", "Checar se o cooler está girando normalmente após a reconexão do cabo."] }
+            },
+            {
+                id: 9, titulo: "O Upgrade Fantasma",
+                ementa: "Substituição de peças / Identificação de componentes",
+                relato: "Comprei um processador novo mais moderno. Instalei certinho, mas o PC liga com coolers girando no máximo, não dá vídeo e a placa-mãe fica com o LED de 'CPU' aceso. Voltei o processador antigo e funcionou normal.",
+                testes: [
+                    { id: "T1", descricao: "Substituir a fonte de alimentação por uma mais potente.", resultado: "O comportamento permanece idêntico (coolers girando sem sinal de vídeo).", feedback: "Ineficiente. O processador novo consome o mesmo ou menos energia que o antigo. O problema é de reconhecimento lógico, não elétrico.", eficiente: false },
+                    { id: "T2", descricao: "Recolocar o processador antigo, ligar o PC, entrar no sistema e verificar a versão da BIOS.", resultado: "O PC dá vídeo normalmente. O software CPU-Z indica que a BIOS está na versão de lançamento de 3 anos atrás.", feedback: "Excelente! Identificar a versão atual do firmware antes de condenar o hardware novo é a conduta técnica perfeita.", eficiente: true },
+                    { id: "T3", descricao: "Testar o processador novo em outra placa-mãe compatível com o mesmo socket.", resultado: "O processador novo funciona perfeitamente na outra placa, confirmando que não está com defeito de fábrica.", feedback: "Ótimo teste de isolamento. Confirma que o problema está na compatibilidade de firmware com a placa-mãe específica.", eficiente: true }
+                ],
+                substituicao: { opcoes: [{ id: "A", texto: "Trocar a placa-mãe por um modelo de categoria superior." }, { id: "B", texto: "Devolver o processador alegando que veio queimado de fábrica." }, { id: "C", texto: "Manter o processador antigo, baixar a BIOS mais recente no site do fabricante e realizar o flash do firmware." }], gabarito: "C", feedback_gabarito: "A BIOS é o firmware responsável por reconhecer os componentes durante a inicialização. O procedimento correto é: instalar o CPU antigo, fazer o flash da BIOS com a versão atualizada, desligar, instalar o CPU novo e ligar novamente." },
+                teste_funcionamento: { correto: "Instalar o processador novo após o upgrade de BIOS, ligar a máquina e verificar se o sistema operacional inicializa com sucesso reconhecendo todos os núcleos.", distratores: ["Ligar o PC com o CPU novo e verificar se o LED de 'CPU' na placa apagou.", "Abrir o Gerenciador de Tarefas e conferir se o número de núcleos do processador está correto."] }
+            },
+            {
+                id: 10, titulo: "Confusão de Linhas de Força",
+                ementa: "Montagem física / Organização interna de cabos",
+                relato: "Estava organizando os cabos com abraçadeiras. Agora a placa de vídeo acende os LEDs, mas o computador fica apitando e aparece: 'Please power down and connect the PCIe power cable(s)'.",
+                testes: [
+                    { id: "T1", descricao: "Retirar a placa de vídeo e limpar os contatos dourados com uma borracha escolar.", resultado: "A mensagem de erro persiste ao reinstalar a placa.", feedback: "Ineficiente. O erro na tela é explícito sobre falta de alimentação elétrica, não sobre sujeira no barramento PCIe.", eficiente: false },
+                    { id: "T2", descricao: "Inspecionar as travas plásticas e as inscrições gravadas nos conectores de energia auxiliares vindos da fonte.", resultado: "O conector plugado na placa de vídeo possui a gravação 'CPU' em relevo, e o cabo 'PCI-E' ficou escondido atrás do gabinete.", feedback: "Excelente! A inspeção visual dos padrões de conectores evita a queima de componentes por inversão de pinagem elétrica.", eficiente: true },
+                    { id: "T3", descricao: "Verificar no manual da fonte quais cabos modulares correspondem a cada função.", resultado: "O manual confirma que os cabos EPS (CPU) e PCIe (GPU) têm pinagens diferentes e NÃO são intercambiáveis, mesmo que o conector encaixe fisicamente.", feedback: "Ótimo. Consultar a documentação do fabricante é prática essencial antes de reorganizar cabos de uma fonte modular.", eficiente: true }
+                ],
+                substituicao: { opcoes: [{ id: "A", texto: "Substituir os conectores cortando os fios e emendando com fita isolante." }, { id: "B", texto: "Remover o cabo incorreto, passar o cabo 'PCI-E' correto e plugá-lo firmemente na GPU respeitando a trava." }, { id: "C", texto: "Comprar outra fonte de alimentação modular." }], gabarito: "B", feedback_gabarito: "Não é necessário trocar nenhuma peça. Os cabos EPS e PCIe de fontes modulares possuem pinagens elétricas diferentes e nunca devem ser trocados entre si. Basta identificar o cabo correto (PCI-E) pela gravação ou cor e conectá-lo na GPU." },
+                teste_funcionamento: { correto: "Ligar a máquina, verificar se o aviso desapareceu e executar um teste de estresse de GPU (FurMark) para garantir o fornecimento correto de energia sob carga de trabalho.", distratores: ["Ligar o PC e verificar se os LEDs da placa de vídeo piscam de forma diferente.", "Abrir um jogo por 5 minutos e verificar se a mensagem de erro não aparece novamente."] }
+            },
+            {
+                id: 11, titulo: "O Conflito de Identidades",
+                ementa: "Conexão e configuração básica de rede local",
+                relato: "Instalei uma impressora de rede nova com IP fixo. Minutos depois, o computador da recepção começou a perder a conexão com a internet e o Windows mostra 'IP Duplicado detectado na rede'.",
+                testes: [
+                    { id: "T1", descricao: "Trocar o cabo de rede (RJ-45) do computador da recepção.", resultado: "O problema de queda de conectividade persiste e o aviso do Windows reaparece.", feedback: "Ineficiente. Falhas físicas de cabo geram desconexão total, não mensagens lógicas sobre duplicidade de endereçamento.", eficiente: false },
+                    { id: "T2", descricao: "Abrir o CMD no PC afetado e executar 'ipconfig /all' junto a um 'ping' para o IP do gateway.", resultado: "O IP do PC é idêntico ao IP configurado na etiqueta da nova impressora, causando perda crônica de pacotes.", feedback: "Perfeito! O uso de comandos de rede no terminal é o primeiro passo essencial para diagnosticar a camada lógica da rede.", eficiente: true },
+                    { id: "T3", descricao: "Acessar o painel de administração do roteador e verificar a tabela de dispositivos conectados e o range do DHCP.", resultado: "O range DHCP do roteador vai de 192.168.1.100 a 192.168.1.200. O IP fixo da impressora (192.168.1.150) está dentro desse intervalo.", feedback: "Excelente diagnóstico de rede. Identificar o range DHCP é fundamental para configurar IPs estáticos corretamente.", eficiente: true }
+                ],
+                substituicao: { opcoes: [{ id: "A", texto: "Substituir a placa de rede do computador da recepção." }, { id: "B", texto: "Acessar o painel da impressora e alterar seu IP estático para um número fora do range do DHCP do roteador." }, { id: "C", texto: "Desligar o switch principal da rede local." }], gabarito: "B", feedback_gabarito: "Aqui não trocamos nenhuma peça física — resolvemos um conflito de configuração lógica de rede. IPs estáticos devem sempre ser definidos fora do range DHCP (ex: abaixo de .100 ou acima de .200) para que o roteador nunca os distribua automaticamente a outro dispositivo." },
+                teste_funcionamento: { correto: "Executar 'ipconfig /renew' no computador prejudicado, verificar se o aviso sumiu e testar a impressão e a navegação web simultaneamente.", distratores: ["Reiniciar o roteador e aguardar todos os dispositivos se reconectarem.", "Desligar e ligar novamente a impressora de rede para ver se ela pega um IP diferente."] }
+            },
+            {
+                id: 12, titulo: "O Cabo Mudo",
+                ementa: "Organização de cabos / Conexão de rede / Testes de funcionamento",
+                relato: "Fiz um cabo de rede de 20 metros para o meu quarto. Quando ligo no computador, a placa de rede nem acende a luz verde (link apagado). O roteador funciona com outros cabos prontos.",
+                testes: [
+                    { id: "T1", descricao: "Conectar as duas pontas do cabo em um Testador de Cabo de Rede RJ-45 portátil.", resultado: "Os LEDs do testador acendem fora de ordem (ex: LED 1 acende na base, mas o LED 3 acende no receptor remoto).", feedback: "Excelente diagnóstico! O testador de cabo físico é a ferramenta padrão ouro para validar o mapeamento de fios antes de passar o cabeamento.", eficiente: true },
+                    { id: "T2", descricao: "Formatar o computador e reinstalar os drivers da placa de rede Realtek.", resultado: "O LED do conector da placa continua apagado.", feedback: "Erro grave de escopo. Nunca realize alterações críticas de software se a falha está evidente no link físico.", eficiente: false },
+                    { id: "T3", descricao: "Comparar visualmente a sequência de cores dos fios dentro do conector RJ-45 com o diagrama padrão T568B.", resultado: "A sequência no conector montado está diferente do padrão — os pares Laranja e Verde estão invertidos em uma das pontas.", feedback: "Diagnóstico visual preciso. A norma T568B define a ordem exata dos pares de fios para garantir que os sinais cheguem nos pinos corretos.", eficiente: true }
+                ],
+                substituicao: { opcoes: [{ id: "A", texto: "Cortar os conectores antigos, reorganizar os fios seguindo a sequência T568B nas duas pontas e crimpar novos conectores RJ-45." }, { id: "B", texto: "Trocar o Switch ou o Roteador de tomada." }, { id: "C", texto: "Passar fita isolante ao redor do cabo de rede para evitar interferências elétricas." }], gabarito: "A", feedback_gabarito: "Aqui não trocamos equipamento — corrigimos a técnica de montagem do cabo. A norma T568B é o padrão mais usado no Brasil: Branco-Laranja, Laranja, Branco-Verde, Azul, Branco-Azul, Verde, Branco-Marrom, Marrom. As duas pontas do cabo direto devem seguir a mesma sequência." },
+                teste_funcionamento: { correto: "Reconectar o cabo corrigido entre o PC e o roteador, checar se os LEDs indicadores de atividade piscaram e verificar se a interface obteve um IP válido via DHCP.", distratores: ["Ligar o cabo e abrir o navegador para verificar se a internet está funcionando.", "Reiniciar o PC e verificar se a placa de rede aparece corretamente no Gerenciador de Dispositivos."] }
+            }
+        ];
+
+        // ════════════════════════════════════════
+        // ESTADO
+        // ════════════════════════════════════════
+        let currentCase = 0;
+        let currentTest = 0;
+        let scoreCorrect = 0;
+        let scoreWrong = 0;
+        let subAnswered = false;
+        let funcAnswered = false;
+        let results = [];
+        // fases: 'tests' | 'substituicao' | 'funcionamento' | 'done'
+        let phase = 'tests';
+
+        // ════════════════════════════════════════
+        // RENDER PRINCIPAL
+        // ════════════════════════════════════════
+        function renderCase() {
+            phase = 'tests';
+            currentTest = 0;
+            subAnswered = false;
+            funcAnswered = false;
+
+            const c = cenarios[currentCase];
+            document.getElementById('badge-case').textContent = `Caso ${currentCase + 1}/12`;
+            document.getElementById('case-current').textContent = currentCase + 1;
+            document.getElementById('case-score-label').innerHTML = `✓ ${scoreCorrect} &nbsp;✗ ${scoreWrong}`;
+            document.getElementById('progress-fill').style.width = ((currentCase / 12) * 100) + '%';
+
+            const g = document.getElementById('screen-game');
+            g.innerHTML = `
+    <!-- CASO CARD -->
+    <div class="case-card">
+      <div class="case-header">
+        <div>
+          <div class="case-num">Caso ${c.id.toString().padStart(2, '0')} · ${c.ementa}</div>
+          <div class="case-title">${c.titulo}</div>
+        </div>
+        <span class="case-tag">Diagnóstico</span>
+      </div>
+      <div class="relato-wrap">
+        <div class="relato-label">📋 Relato do usuário</div>
+        <div class="relato-text">"${c.relato}"</div>
+      </div>
+    </div>
+
+    <!-- TESTES -->
+    <div class="phase-label">🔬 Testes de diagnóstico</div>
+    <div class="test-list" id="test-list"></div>
+    <div id="sub-section"></div>
+    <div id="func-section"></div>
+    <button class="btn-next" id="btn-next"></button>
+  `;
+            renderNextTest();
+        }
+
+        // ════════════════════════════════════════
+        // TESTES
+        // ════════════════════════════════════════
+        function renderNextTest() {
+            const c = cenarios[currentCase];
+            if (currentTest >= c.testes.length) {
+                renderSubstituicao();
+                return;
+            }
+            const t = c.testes[currentTest];
+            const list = document.getElementById('test-list');
+            const card = document.createElement('div');
+            card.className = 'test-card';
+            card.id = `test-card-${currentTest}`;
+            card.innerHTML = `
+    <button class="test-btn" onclick="revealTest(${currentTest})">
+      <div class="test-index">T${currentTest + 1}</div>
+      <div class="test-desc">${t.descricao}</div>
+      <svg class="test-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M4 8h8M9 5l3 3-3 3" stroke="#4A9EE0" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <div class="test-result" id="test-result-${currentTest}"></div>`;
+            list.appendChild(card);
+        }
+
+        function revealTest(idx) {
+            const c = cenarios[currentCase];
+            const t = c.testes[idx];
+            const card = document.getElementById(`test-card-${idx}`);
+            const result = document.getElementById(`test-result-${idx}`);
+            const btn = card.querySelector('.test-btn');
+
+            card.classList.add(t.eficiente ? 'efficient' : 'inefficient');
+            btn.style.pointerEvents = 'none';
+
+            result.innerHTML = `
+    <span class="efficiency-badge">${t.eficiente ? '✅ Teste eficiente' : '⚠️ Teste ineficiente'}</span>
+    <div class="result-box">
+      <div class="result-label">Resultado</div>
+      <div class="result-text">${t.resultado}</div>
+    </div>
+    <div class="feedback-text">💬 ${t.feedback}</div>`;
+            result.classList.add('show');
+
+            currentTest++;
+            setTimeout(() => {
+                renderNextTest();
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            }, 300);
+        }
+
+        // ════════════════════════════════════════
+        // SUBSTITUIÇÃO
+        // ════════════════════════════════════════
+        function renderSubstituicao() {
+            phase = 'substituicao';
+            const c = cenarios[currentCase];
+            const sec = document.getElementById('sub-section');
+            const letters = ['A', 'B', 'C'];
+
+            sec.innerHTML = `
+    <div class="sub-section">
+      <div class="phase-label">🔧 Qual peça substituir?</div>
+      <div class="sub-options" id="sub-options">
+        ${c.substituicao.opcoes.map((o, i) => `
+          <div class="sub-opt" id="sub-opt-${o.id}" onclick="selectSub('${o.id}')">
+            <div class="sub-opt-letter">${letters[i]}</div>
+            <div class="sub-opt-text">${o.texto}</div>
+          </div>`).join('')}
+      </div>
+      <div class="sub-feedback" id="sub-feedback"></div>
+    </div>`;
+
+            setTimeout(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }), 100);
+        }
+
+        function selectSub(chosen) {
+            if (subAnswered) return;
+            subAnswered = true;
+            const c = cenarios[currentCase];
+            const isCorrect = chosen === c.substituicao.gabarito;
+
+            c.substituicao.opcoes.forEach(o => {
+                const el = document.getElementById(`sub-opt-${o.id}`);
+                if (o.id === chosen) el.classList.add(isCorrect ? 'correct' : 'wrong');
+                else if (o.id === c.substituicao.gabarito && !isCorrect) el.classList.add('correct');
+                el.classList.add('disabled');
+            });
+
+            if (isCorrect) scoreCorrect++; else scoreWrong++;
+            document.getElementById('case-score-label').innerHTML = `✓ ${scoreCorrect} &nbsp;✗ ${scoreWrong}`;
+
+            results.push({ titulo: c.titulo, subCorrect: isCorrect, funcCorrect: null });
+
+            const fb = document.getElementById('sub-feedback');
+            fb.className = 'sub-feedback ' + (isCorrect ? 'correct' : 'wrong');
+            fb.innerHTML = `
+    <div class="sub-feedback-header">
+      <span>${isCorrect ? '✅' : '❌'}</span>
+      <strong>${isCorrect ? 'Diagnóstico correto!' : 'Não é essa peça!'}</strong>
+    </div>
+    <p class="sub-feedback-text">${c.substituicao.feedback_gabarito}</p>`;
+            fb.style.display = 'block';
+
+            setTimeout(() => {
+                renderFuncionamento();
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            }, 400);
+        }
+
+        // ════════════════════════════════════════
+        // TESTE DE FUNCIONAMENTO
+        // ════════════════════════════════════════
+        function renderFuncionamento() {
+            phase = 'funcionamento';
+            const c = cenarios[currentCase];
+            const sec = document.getElementById('func-section');
+
+            // opções: correto + 2 distratores, embaralhados
+            const all = [
+                { text: c.teste_funcionamento.correto, correct: true },
+                ...c.teste_funcionamento.distratores.map(d => ({ text: d, correct: false }))
+            ].sort(() => Math.random() - .5);
+
+            sec.innerHTML = `
+    <div class="func-section">
+      <div class="func-label">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v6l4 2" stroke="#F5C842" stroke-width="1.5" stroke-linecap="round"/><circle cx="7" cy="7" r="6" stroke="#F5C842" stroke-width="1.2"/></svg>
+        Teste de funcionamento
+      </div>
+      <div class="func-text">Reparo concluído! Qual é a ação correta para confirmar que o problema foi resolvido?</div>
+      <div class="func-opts" id="func-opts">
+        ${all.map((o, i) => `
+          <div class="func-opt" id="func-opt-${i}" onclick="selectFunc(${i}, ${o.correct})">
+            ${o.text}
+          </div>`).join('')}
+      </div>
+    </div>`;
+
+            setTimeout(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }), 100);
+        }
+
+        function selectFunc(idx, isCorrect) {
+            if (funcAnswered) return;
+            funcAnswered = true;
+
+            document.querySelectorAll('.func-opt').forEach((el, i) => {
+                if (i === idx) el.classList.add(isCorrect ? 'correct' : 'wrong');
+                el.classList.add('disabled');
+            });
+            // revela correto se errou
+            if (!isCorrect) {
+                document.querySelectorAll('.func-opt').forEach(el => {
+                    if (!el.classList.contains('wrong') && !el.classList.contains('disabled') ||
+                        (el.dataset && el.getAttribute('onclick') && el.getAttribute('onclick').includes('true'))) {
+                        // recheck via text comparison not needed — find correct btn differently
+                    }
+                });
+                // marca o correto
+                document.querySelectorAll('.func-opt').forEach(el => {
+                    const fn = el.getAttribute('onclick');
+                    if (fn && fn.includes('true')) el.classList.add('correct');
+                });
+            }
+
+            // atualiza último resultado com funcCorrect
+            if (results.length > 0) results[results.length - 1].funcCorrect = isCorrect;
+
+            // mostra botão próximo
+            const btn = document.getElementById('btn-next');
+            const isLast = currentCase >= cenarios.length - 1;
+            btn.textContent = isLast ? 'Ver resultado final →' : 'Próximo caso →';
+            btn.classList.add('show');
+            btn.onclick = isLast ? showResult : nextCase;
+
+            setTimeout(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }), 100);
+        }
+
+        // ════════════════════════════════════════
+        // NAVEGAÇÃO
+        // ════════════════════════════════════════
+        function nextCase() {
+            currentCase++;
+            renderCase();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ════════════════════════════════════════
+        // RESULTADO FINAL
+        // ════════════════════════════════════════
+        function showResult() {
+            document.getElementById('screen-game').style.display = 'none';
+            document.getElementById('progress-fill').style.width = '100%';
+            document.getElementById('badge-case').textContent = '12/12';
+            document.getElementById('screen-result').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            document.getElementById('result-num').textContent = scoreCorrect;
+
+            const circumference = 364;
+            const offset = circumference - (scoreCorrect / 12) * circumference;
+            setTimeout(() => {
+                const arc = document.getElementById('score-arc');
+                arc.style.transition = 'stroke-dashoffset 1s cubic-bezier(.4,0,.2,1)';
+                arc.style.strokeDashoffset = offset;
+                arc.style.stroke = scoreCorrect >= 10 ? '#1AB078' : scoreCorrect >= 6 ? '#F7732A' : '#E8445A';
+            }, 150);
+
+            let title, subtitle;
+            if (scoreCorrect === 12) { title = '🏆 Técnico Expert!'; subtitle = 'Diagnóstico perfeito em todos os casos. Você está pronto para o laboratório real!'; }
+            else if (scoreCorrect >= 9) { title = '🎉 Excelente!'; subtitle = 'Ótimo raciocínio diagnóstico. Revise os casos que errou e aperfeiçoe sua técnica.'; }
+            else if (scoreCorrect >= 6) { title = '💪 Bom trabalho!'; subtitle = 'Você identificou a maioria das falhas. Continue praticando o processo diagnóstico.'; }
+            else { title = '📚 Vamos estudar mais!'; subtitle = 'Revise os componentes e os procedimentos de diagnóstico no material da disciplina.'; }
+
+            document.getElementById('result-title').textContent = title;
+            document.getElementById('result-subtitle').textContent = subtitle;
+
+            const list = document.getElementById('breakdown-list');
+            list.innerHTML = '';
+            results.forEach(r => {
+                const row = document.createElement('div');
+                row.className = 'breakdown-row';
+                row.innerHTML = `
+      <div class="breakdown-case">${r.titulo}</div>
+      <div class="breakdown-badges">
+        <span class="breakdown-badge ${r.subCorrect ? 'ok' : 'err'}" title="Substituição">${r.subCorrect ? '✓ Peça' : '✗ Peça'}</span>
+        <span class="breakdown-badge ${r.funcCorrect ? 'ok' : 'err'}" title="Funcionamento">${r.funcCorrect ? '✓ Teste' : '✗ Teste'}</span>
+      </div>`;
+                list.appendChild(row);
+            });
+        }
+
+        // ════════════════════════════════════════
+        // RESET / NAV
+        // ════════════════════════════════════════
+        function restartGame() {
+            currentCase = 0; scoreCorrect = 0; scoreWrong = 0; results = [];
+            document.getElementById('screen-result').style.display = 'none';
+            document.getElementById('screen-game').style.display = 'block';
+            renderCase();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        function goBack() { history.back(); }
+        function goHome() { window.location.href = 'index.html'; }
+
+        // START
+        renderCase();
+    </script>
+</body>
+
+</html>
