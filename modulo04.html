@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TechQuest — Módulo 4: Rede</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--blue-dark:#0D1B2A;--blue-mid:#1A3A5C;--blue:#1E6FBF;--blue-light:#4A9EE0;--orange:#F7732A;--orange-light:#FFAD6F;--white:#F4F8FF;--gray:#8BA3BC;--card-bg:#162840;--green:#1AB078;--red:#E8445A;--teal:#0FC4C4;--teal-dim:#0a8a8a}
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{background:var(--blue-dark);color:var(--white);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden}
+  .bg-pattern{position:fixed;inset:0;z-index:0;background-image:radial-gradient(circle at 75% 15%,rgba(15,196,196,.18) 0%,transparent 50%),radial-gradient(circle at 15% 75%,rgba(30,111,191,.2) 0%,transparent 45%)}
+  .bg-grid{position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(15,196,196,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(15,196,196,.05) 1px,transparent 1px);background-size:32px 32px}
+  .page{position:relative;z-index:1;max-width:430px;margin:0 auto;padding:0 20px 56px}
+  .topbar{display:flex;align-items:center;gap:12px;padding:18px 0 12px}
+  .btn-back{width:36px;height:36px;border-radius:10px;background:var(--card-bg);border:1px solid rgba(15,196,196,.15);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+  .topbar-info{flex:1}
+  .topbar-label{font-size:11px;color:var(--gray);letter-spacing:1px;text-transform:uppercase}
+  .topbar-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700}
+  .topbar-badge{font-size:11px;font-weight:600;background:rgba(15,196,196,.15);color:var(--teal);border:1px solid rgba(15,196,196,.3);padding:4px 10px;border-radius:20px}
+  .progress-wrap{margin-bottom:18px}
+  .progress-meta{display:flex;justify-content:space-between;font-size:12px;color:var(--gray);margin-bottom:7px}
+  .progress-meta strong{color:var(--white)}
+  .progress-track{height:6px;background:var(--card-bg);border-radius:99px;overflow:hidden}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--teal-dim),var(--teal));border-radius:99px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+  .scene-card{background:var(--card-bg);border:1px solid rgba(15,196,196,.2);border-radius:20px;padding:18px;margin-bottom:14px;animation:fadeUp .35s ease both}
+  .scene-num{font-size:10px;font-weight:600;letter-spacing:1.5px;color:var(--teal);text-transform:uppercase;margin-bottom:4px}
+  .scene-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;line-height:1.2;margin-bottom:10px}
+  .scene-context{background:rgba(13,27,42,.6);border-radius:12px;padding:13px;border-left:3px solid var(--teal)}
+  .scene-context-label{font-size:10px;font-weight:600;letter-spacing:1.5px;color:var(--teal);text-transform:uppercase;margin-bottom:5px}
+  .scene-context-text{font-size:13px;color:var(--white);line-height:1.6}
+  .phase-label{font-size:11px;font-weight:600;color:var(--gray);letter-spacing:1px;text-transform:uppercase;margin:18px 0 12px;display:flex;align-items:center;gap:8px}
+  .phase-label::after{content:'';flex:1;height:1px;background:rgba(15,196,196,.12)}
+  .phase-steps{display:flex;gap:6px;margin-bottom:18px}
+  .phase-step{flex:1;height:4px;border-radius:99px;background:var(--card-bg);transition:background .3s}
+  .phase-step.active{background:var(--teal)}
+  .phase-step.done{background:rgba(15,196,196,.4)}
+  /* TOPOLOGIA */
+  .topo-wrap{background:var(--card-bg);border:1px solid rgba(15,196,196,.15);border-radius:18px;padding:16px;margin-bottom:14px;animation:fadeUp .35s ease both}
+  .topo-instruction{font-size:13px;color:var(--gray);line-height:1.6;margin-bottom:14px}
+  .topo-instruction strong{color:var(--white)}
+  .topo-canvas{background:rgba(13,27,42,.7);border-radius:14px;padding:14px;margin-bottom:14px}
+  .topo-devices{display:flex;justify-content:space-around;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+  .topo-device{display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;transition:transform .15s}
+  .topo-device:active{transform:scale(.95)}
+  .topo-device-icon{width:52px;height:52px;border-radius:13px;display:flex;align-items:center;justify-content:center;transition:box-shadow .2s;background:var(--card-bg);border:1.5px solid rgba(15,196,196,.2)}
+  .topo-device-label{font-size:10px;font-weight:600;color:var(--gray);text-align:center}
+  .topo-device.selected .topo-device-icon{box-shadow:0 0 0 2px var(--teal),0 0 14px rgba(15,196,196,.4)}
+  .topo-device.connected .topo-device-icon{box-shadow:0 0 0 2px var(--green)}
+  .topo-device.connected .topo-device-label{color:var(--green)}
+  .topo-slots{display:flex;flex-direction:column;gap:8px}
+  .topo-slot{background:rgba(26,58,92,.4);border:1.5px dashed rgba(15,196,196,.2);border-radius:11px;padding:10px 13px;display:flex;align-items:center;gap:9px;font-size:12px;color:var(--gray);cursor:pointer;transition:border-color .2s}
+  .topo-slot:hover{border-color:rgba(15,196,196,.4)}
+  .topo-slot.filled{border-style:solid;border-color:var(--green);background:rgba(26,176,120,.07);color:var(--white)}
+  .topo-slot.filled-wrong{border-style:solid;border-color:var(--red);background:rgba(232,68,90,.06);color:var(--red)}
+  .topo-slot-port{font-size:10px;font-weight:600;color:var(--teal);letter-spacing:1px;text-transform:uppercase;flex-shrink:0;margin-left:auto}
+  .topo-feedback{border-radius:12px;padding:12px 14px;display:none;margin-bottom:12px}
+  .topo-feedback.show{display:block;animation:fadeUp .25s ease both}
+  .topo-feedback.correct{background:rgba(26,176,120,.1);border:1px solid rgba(26,176,120,.3)}
+  .topo-feedback.wrong{background:rgba(232,68,90,.08);border:1px solid rgba(232,68,90,.3)}
+  .topo-feedback-hdr{display:flex;align-items:center;gap:7px;margin-bottom:5px}
+  .topo-feedback-hdr strong{font-family:'Syne',sans-serif;font-size:13px;font-weight:700}
+  .topo-feedback.correct .topo-feedback-hdr strong{color:var(--green)}
+  .topo-feedback.wrong   .topo-feedback-hdr strong{color:var(--red)}
+  .topo-feedback-txt{font-size:12px;color:var(--gray);line-height:1.55}
+  /* CONFIG */
+  .config-wrap{background:var(--card-bg);border:1px solid rgba(15,196,196,.15);border-radius:18px;padding:16px;margin-bottom:14px;animation:fadeUp .35s ease both}
+  .config-screen{background:#0a1520;border-radius:12px;padding:14px;margin-bottom:14px}
+  .config-screen-bar{display:flex;align-items:center;gap:6px;margin-bottom:12px}
+  .cfg-dot{width:8px;height:8px;border-radius:50%}
+  .config-screen-title{font-size:11px;color:var(--gray);letter-spacing:.5px}
+  .config-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:10px}
+  .config-row-label{font-size:12px;color:var(--gray);min-width:108px;flex-shrink:0;padding-top:9px}
+  .config-input{width:100%;background:rgba(15,196,196,.06);border:1.5px solid rgba(15,196,196,.2);border-radius:8px;padding:8px 11px;font-size:13px;color:var(--white);font-family:'DM Sans',monospace;outline:none;transition:border-color .2s}
+  .config-input:focus{border-color:var(--teal)}
+  .config-input.correct{border-color:var(--green);background:rgba(26,176,120,.1);pointer-events:none}
+  .config-hint{font-size:11px;margin-top:3px;min-height:14px}
+  .config-hint.ok{color:var(--green)}
+  .config-hint.err{color:var(--red)}
+  .config-btn{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;background:rgba(15,196,196,.12);color:var(--teal);border:1.5px solid rgba(15,196,196,.25);border-radius:11px;padding:11px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif}
+  /* QUIZ */
+  .quiz-wrap{background:var(--card-bg);border:1px solid rgba(15,196,196,.15);border-radius:18px;padding:16px;margin-bottom:14px;animation:fadeUp .35s ease both}
+  .quiz-scenario{background:rgba(13,27,42,.6);border-radius:11px;padding:13px;border-left:3px solid var(--orange);margin-bottom:14px}
+  .quiz-scenario-label{font-size:10px;font-weight:600;letter-spacing:1.5px;color:var(--orange);text-transform:uppercase;margin-bottom:5px}
+  .quiz-scenario-text{font-size:13px;color:var(--white);line-height:1.6}
+  .quiz-options{display:flex;flex-direction:column;gap:9px}
+  .quiz-opt{background:rgba(26,58,92,.4);border:1.5px solid rgba(74,158,224,.15);border-radius:12px;padding:13px 15px;display:flex;align-items:center;gap:11px;cursor:pointer;user-select:none;transition:border-color .15s}
+  .quiz-opt:active{transform:scale(.99)}
+  .quiz-opt:hover{border-color:rgba(15,196,196,.35)}
+  .quiz-opt.correct{border-color:var(--green);background:rgba(26,176,120,.1);animation:pulse-green .35s ease}
+  .quiz-opt.wrong{border-color:var(--red);background:rgba(232,68,90,.07);animation:shake .3s ease}
+  .quiz-opt.disabled{pointer-events:none;opacity:.45}
+  .quiz-opt.correct.disabled{opacity:1}
+  .quiz-opt-letter{width:28px;height:28px;border-radius:7px;flex-shrink:0;background:rgba(15,196,196,.1);border:1px solid rgba(15,196,196,.2);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--teal)}
+  .quiz-opt.correct .quiz-opt-letter{background:var(--green);color:#fff;border-color:var(--green)}
+  .quiz-opt.wrong   .quiz-opt-letter{background:var(--red);color:#fff;border-color:var(--red)}
+  .quiz-opt-text{font-size:13px;font-weight:500;line-height:1.35;flex:1}
+  .quiz-feedback{border-radius:12px;padding:13px 15px;margin-top:12px;display:none}
+  .quiz-feedback.show{display:block;animation:fadeUp .3s ease both}
+  .quiz-feedback.correct{background:rgba(26,176,120,.1);border:1px solid rgba(26,176,120,.3)}
+  .quiz-feedback.wrong{background:rgba(232,68,90,.08);border:1px solid rgba(232,68,90,.3)}
+  .quiz-feedback-hdr{display:flex;align-items:center;gap:7px;margin-bottom:5px}
+  .quiz-feedback-hdr strong{font-family:'Syne',sans-serif;font-size:13px;font-weight:700}
+  .quiz-feedback.correct .quiz-feedback-hdr strong{color:var(--green)}
+  .quiz-feedback.wrong   .quiz-feedback-hdr strong{color:var(--red)}
+  .quiz-feedback-txt{font-size:12px;color:var(--gray);line-height:1.6}
+  /* BOTOES */
+  .btn-next{display:none;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--teal-dim);color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;padding:14px;border-radius:13px;border:none;cursor:pointer;margin-top:4px}
+  .btn-next.show{display:flex;animation:fadeUp .3s ease both}
+  .btn-primary{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;background:var(--orange);color:#fff;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;padding:15px;border-radius:14px;border:none;cursor:pointer;box-shadow:0 8px 24px rgba(247,115,42,.35);margin-bottom:10px}
+  .btn-secondary{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--card-bg);color:var(--white);border:1.5px solid rgba(74,158,224,.2);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;padding:14px;border-radius:13px;cursor:pointer}
+  /* RESULTADO */
+  #screen-result{display:none;animation:fadeUp .4s ease both}
+  .result-hero{text-align:center;padding:24px 0}
+  .result-score-ring{position:relative;width:140px;height:140px;margin:0 auto 20px}
+  .result-score-ring svg{position:absolute;inset:0;transform:rotate(-90deg)}
+  .result-score-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .result-score-num{font-family:'Syne',sans-serif;font-size:38px;font-weight:800;line-height:1}
+  .result-score-label{font-size:11px;color:var(--gray);margin-top:2px}
+  .result-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:8px}
+  .result-subtitle{font-size:14px;color:var(--gray);line-height:1.6;max-width:280px;margin:0 auto 24px}
+  .result-breakdown{background:var(--card-bg);border:1px solid rgba(74,158,224,.12);border-radius:16px;padding:16px;margin-bottom:20px}
+  .breakdown-title{font-size:11px;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+  .breakdown-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid rgba(74,158,224,.06)}
+  .breakdown-row:last-child{border-bottom:none}
+  .breakdown-case{font-size:13px;flex:1;padding-right:8px}
+  .breakdown-badges{display:flex;gap:5px;flex-shrink:0}
+  .bd-badge{font-size:10px;font-weight:600;padding:3px 8px;border-radius:99px}
+  .bd-badge.ok{background:rgba(26,176,120,.15);color:var(--green)}
+  .bd-badge.err{background:rgba(232,68,90,.12);color:var(--red)}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes pulse-green{0%{box-shadow:0 0 0 0 rgba(26,176,120,.5)}70%{box-shadow:0 0 0 10px rgba(26,176,120,0)}100%{box-shadow:0 0 0 0 rgba(26,176,120,0)}}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+</style>
+</head>
+<body>
+<div class="bg-pattern"></div>
+<div class="bg-grid"></div>
+<div class="page">
+  <div class="topbar">
+    <div class="btn-back" onclick="goBack()">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M11 4l-5 5 5 5" stroke="#0FC4C4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="topbar-info">
+      <div class="topbar-label">Módulo 04</div>
+      <div class="topbar-title">Conexão e Rede</div>
+    </div>
+    <div class="topbar-badge" id="badge-scene">Cen. 1/8</div>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-meta">
+      <span>Cenário <strong id="scene-current">1</strong> de <strong>8</strong></span>
+      <span id="scene-score-label">✓ 0 &nbsp;✗ 0</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+  </div>
+  <div id="screen-game"></div>
+  <div id="screen-result">
+    <div class="result-hero">
+      <div class="result-score-ring">
+        <svg width="140" height="140" viewBox="0 0 140 140">
+          <circle cx="70" cy="70" r="58" stroke="#162840" stroke-width="12" fill="none"/>
+          <circle cx="70" cy="70" r="58" id="score-arc" stroke="#0FC4C4" stroke-width="12" fill="none" stroke-linecap="round" stroke-dasharray="364" stroke-dashoffset="364"/>
+        </svg>
+        <div class="result-score-inner">
+          <div class="result-score-num" id="result-num">0</div>
+          <div class="result-score-label">de 24 pontos</div>
+        </div>
+      </div>
+      <h2 class="result-title" id="result-title"></h2>
+      <p class="result-subtitle" id="result-subtitle"></p>
+    </div>
+    <div class="result-breakdown">
+      <div class="breakdown-title">Resumo por cenário</div>
+      <div id="breakdown-list"></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <button class="btn-primary" onclick="restartGame()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8a5 5 0 1 1 1.5 3.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/><path d="M3 5v3h3" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Refazer módulo
+      </button>
+      <button class="btn-secondary" onclick="goHome()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 6.5L8 2l6 4.5V14H10v-4H6v4H2z" stroke="#4A9EE0" stroke-width="1.6" stroke-linejoin="round" fill="none"/></svg>
+        Voltar ao início
+      </button>
+    </div>
+  </div>
+</div>
+<script>
+const ICONS={
+  pc:`<svg viewBox="0 0 52 52" fill="none"><rect x="6" y="8" width="40" height="28" rx="5" fill="#162840" stroke="#4A9EE0" stroke-width="1.5"/><rect x="10" y="12" width="32" height="20" rx="3" fill="#0D1B2A"/><rect x="14" y="16" width="10" height="6" rx="1.5" fill="#4A9EE0" opacity=".4"/><rect x="28" y="16" width="10" height="6" rx="1.5" fill="#0FC4C4" opacity=".5"/><rect x="14" y="24" width="24" height="3" rx="1.5" fill="#4A9EE0" opacity=".2"/><rect x="20" y="36" width="12" height="4" rx="2" fill="#1A3A5C"/><rect x="14" y="40" width="24" height="4" rx="2" fill="#1E6FBF" opacity=".6"/></svg>`,
+  switch:`<svg viewBox="0 0 52 52" fill="none"><rect x="4" y="16" width="44" height="20" rx="5" fill="#162840" stroke="#0FC4C4" stroke-width="1.5"/><rect x="9" y="21" width="6" height="10" rx="2" fill="#0D1B2A" stroke="#0FC4C4" stroke-width="1"/><rect x="18" y="21" width="6" height="10" rx="2" fill="#0D1B2A" stroke="#0FC4C4" stroke-width="1"/><rect x="27" y="21" width="6" height="10" rx="2" fill="#0D1B2A" stroke="#0FC4C4" stroke-width="1"/><rect x="36" y="21" width="6" height="10" rx="2" fill="#0D1B2A" stroke="#0FC4C4" stroke-width="1"/><circle cx="12" cy="38" r="3" fill="#0FC4C4" opacity=".8"/><circle cx="21" cy="38" r="3" fill="#0FC4C4" opacity=".5"/><circle cx="30" cy="38" r="3" fill="#1AB078" opacity=".7"/></svg>`,
+  router:`<svg viewBox="0 0 52 52" fill="none"><rect x="6" y="18" width="40" height="18" rx="5" fill="#162840" stroke="#F7732A" stroke-width="1.5"/><rect x="10" y="22" width="8" height="10" rx="2" fill="#0D1B2A"/><rect x="12" y="24" width="4" height="6" rx="1" fill="#F7732A" opacity=".6"/><circle cx="28" cy="27" r="4" fill="#0D1B2A" stroke="#F7732A" stroke-width="1"/><circle cx="28" cy="27" r="1.5" fill="#F7732A" opacity=".7"/><rect x="34" y="23" width="8" height="8" rx="2" fill="#0D1B2A"/><rect x="36" y="25" width="4" height="4" rx="1" fill="#FFAD6F" opacity=".5"/><line x1="22" y1="12" x2="22" y2="18" stroke="#F7732A" stroke-width="2" stroke-linecap="round"/><line x1="28" y1="10" x2="28" y2="18" stroke="#F7732A" stroke-width="2" stroke-linecap="round"/><line x1="34" y1="12" x2="34" y2="18" stroke="#F7732A" stroke-width="2" stroke-linecap="round"/></svg>`,
+  internet:`<svg viewBox="0 0 52 52" fill="none"><circle cx="26" cy="26" r="18" fill="#0D1B2A" stroke="#0FC4C4" stroke-width="1.5"/><ellipse cx="26" cy="26" rx="8" ry="18" fill="none" stroke="#0FC4C4" stroke-width="1" opacity=".5"/><line x1="8" y1="26" x2="44" y2="26" stroke="#0FC4C4" stroke-width="1" opacity=".5"/><line x1="10" y1="18" x2="42" y2="18" stroke="#0FC4C4" stroke-width=".8" opacity=".3"/><line x1="10" y1="34" x2="42" y2="34" stroke="#0FC4C4" stroke-width=".8" opacity=".3"/><circle cx="26" cy="26" r="3" fill="#0FC4C4" opacity=".7"/></svg>`,
+  printer:`<svg viewBox="0 0 52 52" fill="none"><rect x="6" y="18" width="40" height="22" rx="5" fill="#162840" stroke="#8BA3BC" stroke-width="1.5"/><rect x="12" y="8" width="28" height="12" rx="3" fill="#1A3A5C" stroke="#8BA3BC" stroke-width="1"/><rect x="15" y="26" width="22" height="8" rx="2" fill="#0D1B2A"/><rect x="18" y="28" width="16" height="2" rx="1" fill="#8BA3BC" opacity=".4"/><rect x="18" y="32" width="10" height="2" rx="1" fill="#8BA3BC" opacity=".3"/><circle cx="38" cy="24" r="3" fill="#1AB078" opacity=".7"/></svg>`,
+  server:`<svg viewBox="0 0 52 52" fill="none"><rect x="8" y="8" width="36" height="12" rx="3" fill="#162840" stroke="#4A9EE0" stroke-width="1.5"/><rect x="8" y="22" width="36" height="12" rx="3" fill="#162840" stroke="#4A9EE0" stroke-width="1.5"/><rect x="8" y="36" width="36" height="10" rx="3" fill="#162840" stroke="#4A9EE0" stroke-width="1.5"/><circle cx="37" cy="14" r="2.5" fill="#1AB078" opacity=".8"/><circle cx="37" cy="28" r="2.5" fill="#1AB078" opacity=".6"/><circle cx="37" cy="41" r="2.5" fill="#F7732A" opacity=".7"/><rect x="12" y="11" width="16" height="6" rx="1.5" fill="#0D1B2A"/><rect x="12" y="25" width="16" height="6" rx="1.5" fill="#0D1B2A"/></svg>`,
+  laptop:`<svg viewBox="0 0 52 52" fill="none"><rect x="8" y="10" width="36" height="24" rx="4" fill="#162840" stroke="#4A9EE0" stroke-width="1.5"/><rect x="12" y="14" width="28" height="16" rx="2" fill="#0D1B2A"/><rect x="15" y="17" width="10" height="6" rx="1" fill="#4A9EE0" opacity=".3"/><rect x="28" y="17" width="8" height="6" rx="1" fill="#0FC4C4" opacity=".4"/><rect x="4" y="34" width="44" height="6" rx="3" fill="#1A3A5C" stroke="#4A9EE0" stroke-width="1"/><rect x="18" y="35" width="16" height="4" rx="2" fill="#0D1B2A"/></svg>`
+};
+
+const cenarios=[
+  {id:1,titulo:"Rede Básica com Switch",contexto:"Monte a rede de um pequeno escritório: dois PCs se comunicam através de um switch conectado a um roteador com saída para a internet.",
+    topo:{dispositivos:[{id:'pc1',label:'PC 1',icon:'pc'},{id:'switch',label:'Switch',icon:'switch'},{id:'router',label:'Roteador',icon:'router'},{id:'internet',label:'Internet',icon:'internet'},{id:'pc2',label:'PC 2',icon:'pc'}],slots:[{id:'s1',label:'PC 1 → conectar em:',gabarito:'switch',porta:'Fa0/1'},{id:'s2',label:'PC 2 → conectar em:',gabarito:'switch',porta:'Fa0/2'},{id:'s3',label:'Switch → conectar em:',gabarito:'router',porta:'Uplink'},{id:'s4',label:'Roteador → conectar em:',gabarito:'internet',porta:'WAN'}],feedback:{correct:"Correto! PCs conectam no switch, o switch conecta no roteador pela porta uplink e o roteador acessa a internet pela porta WAN. Essa é a topologia estrela básica.",wrong:"Verifique a ordem: PCs → Switch → Roteador → Internet. O switch organiza a rede local; o roteador faz a saída para a internet."}},
+    config:{instrucao:"Configure o PC 1. O roteador usa 192.168.1.1 e distribui IPs no range 192.168.1.100–200.",campos:[{id:'ip',label:'Endereço IP',gabarito:'192.168.1.100',placeholder:'192.168.1.xxx',hint_ok:'✓ IP válido no range DHCP',hint_err:'Use um IP no range: 192.168.1.100 a .200'},{id:'mask',label:'Máscara',gabarito:'255.255.255.0',placeholder:'255.255.255.0',hint_ok:'✓ Máscara /24 correta',hint_err:'Use 255.255.255.0 para redes domésticas'},{id:'gw',label:'Gateway padrão',gabarito:'192.168.1.1',placeholder:'192.168.1.1',hint_ok:'✓ Gateway aponta para o roteador',hint_err:'O gateway deve ser o IP do roteador: 192.168.1.1'},{id:'dns',label:'DNS',gabarito:'8.8.8.8',placeholder:'8.8.8.8',hint_ok:'✓ DNS do Google configurado',hint_err:'Use um DNS público válido: 8.8.8.8'}]},
+    quiz:{pergunta:"Os PCs se pingam entre si, mas nenhum acessa a internet. Qual é a causa mais provável?",opcoes:["O switch está com defeito e não encaminha pacotes","O cabo WAN do roteador está solto ou a conexão com o provedor falhou","A máscara de sub-rede dos PCs está errada","Os PCs precisam de IPs fixos para acessar a internet"],gabarito_idx:1,feedback:{correct:"Correto! Se os PCs se comunicam na LAN, o switch está OK. O problema está na saída WAN do roteador — cabo solto, PPPoE mal configurado ou falha no provedor.",wrong:"Se a LAN funciona (PCs se pingam), o switch e as máscaras estão OK. O problema está especificamente na saída WAN do roteador para a internet."}}
+  },
+  {id:2,titulo:"IP Duplicado na Impressora",contexto:"Uma impressora de rede foi configurada com IP fixo. Minutos depois, um laptop perdeu a conexão. O Windows exibe 'Conflito de endereço IP detectado'.",
+    topo:{dispositivos:[{id:'laptop',label:'Laptop',icon:'laptop'},{id:'switch',label:'Switch',icon:'switch'},{id:'printer',label:'Impressora',icon:'printer'},{id:'router',label:'Roteador',icon:'router'}],slots:[{id:'s1',label:'Laptop → conectar em:',gabarito:'switch',porta:'Fa0/1'},{id:'s2',label:'Impressora → conectar em:',gabarito:'switch',porta:'Fa0/2'},{id:'s3',label:'Switch → conectar em:',gabarito:'router',porta:'Uplink'}],feedback:{correct:"Topologia correta! Todos os dispositivos conectam no switch, que se liga ao roteador. O conflito de IP é um problema de configuração lógica, não de topologia física.",wrong:"Todos os dispositivos da rede local devem se conectar ao switch. O switch então se conecta ao roteador."}},
+    config:{instrucao:"O DHCP distribui .100 a .150. Configure a impressora com IP fixo FORA desse range para evitar conflito. Roteador: 192.168.0.1.",campos:[{id:'ip',label:'IP da impressora',gabarito:'192.168.0.200',placeholder:'192.168.0.xxx',hint_ok:'✓ IP fora do range DHCP — sem conflito!',hint_err:'IP dentro do range DHCP (.100-.150). Use um número fora desse intervalo'},{id:'mask',label:'Máscara',gabarito:'255.255.255.0',placeholder:'255.255.255.0',hint_ok:'✓ Máscara correta',hint_err:'Use 255.255.255.0'},{id:'gw',label:'Gateway',gabarito:'192.168.0.1',placeholder:'192.168.0.x',hint_ok:'✓ Gateway correto',hint_err:'O gateway é o roteador: 192.168.0.1'}]},
+    quiz:{pergunta:"Por que um IP estático dentro do range DHCP causa conflito?",opcoes:["Porque o switch não suporta dois tipos de IP na mesma rede","Porque o roteador pode distribuir o mesmo IP via DHCP para outro dispositivo","Porque IPs estáticos são bloqueados automaticamente pelo roteador","Porque a máscara de sub-rede fica diferente entre os dispositivos"],gabarito_idx:1,feedback:{correct:"Exato! O servidor DHCP não sabe que aquele IP foi reservado manualmente. Quando outro dispositivo pede um IP, o DHCP pode distribuir exatamente o mesmo número, causando conflito.",wrong:"O DHCP não consulta IPs atribuídos manualmente. Ele distribui endereços do seu range sem verificar se algum já foi usado como IP estático, causando duplicidade."}}
+  },
+  {id:3,titulo:"Rede com Servidor Local",contexto:"Uma pequena empresa precisa que todos os computadores acessem um servidor de arquivos local E a internet através do roteador.",
+    topo:{dispositivos:[{id:'pc1',label:'PC 1',icon:'pc'},{id:'pc2',label:'PC 2',icon:'pc'},{id:'server',label:'Servidor',icon:'server'},{id:'switch',label:'Switch',icon:'switch'},{id:'router',label:'Roteador',icon:'router'}],slots:[{id:'s1',label:'PC 1 → conectar em:',gabarito:'switch',porta:'Fa0/1'},{id:'s2',label:'PC 2 → conectar em:',gabarito:'switch',porta:'Fa0/2'},{id:'s3',label:'Servidor → conectar em:',gabarito:'switch',porta:'Fa0/3'},{id:'s4',label:'Switch → conectar em:',gabarito:'router',porta:'Uplink'}],feedback:{correct:"Perfeito! Todos os dispositivos — PCs e servidor — ficam na mesma rede local via switch. O switch conecta ao roteador para saída de internet. O servidor recebe IP fixo dentro da LAN.",wrong:"Tanto os PCs quanto o servidor devem se conectar ao switch. O switch é o hub central da LAN, e apenas ele se conecta ao roteador."}},
+    config:{instrucao:"Configure o Servidor com IP fixo. Rede: 10.0.0.x /24. Roteador: 10.0.0.1. Servidor deve usar 10.0.0.10.",campos:[{id:'ip',label:'IP do Servidor',gabarito:'10.0.0.10',placeholder:'10.0.0.x',hint_ok:'✓ IP fixo do servidor configurado',hint_err:'O servidor deve usar o IP 10.0.0.10'},{id:'mask',label:'Máscara',gabarito:'255.255.255.0',placeholder:'255.255.255.0',hint_ok:'✓ Máscara /24 correta',hint_err:'Use 255.255.255.0 (/24)'},{id:'gw',label:'Gateway',gabarito:'10.0.0.1',placeholder:'10.0.0.x',hint_ok:'✓ Gateway apontando para o roteador',hint_err:'O gateway deve ser o IP do roteador: 10.0.0.1'},{id:'dns',label:'DNS',gabarito:'8.8.8.8',placeholder:'8.8.8.8',hint_ok:'✓ DNS externo configurado',hint_err:'Use um DNS público: 8.8.8.8'}]},
+    quiz:{pergunta:"O PC 1 acessa o servidor (10.0.0.10), mas não acessa sites. O gateway do PC 1 está como 10.0.0.10. Qual é o problema?",opcoes:["O PC 1 está com a máscara errada","O gateway do PC 1 aponta para o servidor em vez do roteador","O servidor está bloqueando o tráfego de internet","O switch não suporta mais de 3 dispositivos"],gabarito_idx:1,feedback:{correct:"Correto! O gateway padrão deve sempre apontar para o roteador (10.0.0.1), não para o servidor. O gateway é a 'porta de saída' para redes externas — somente o roteador tem essa função.",wrong:"O gateway padrão é para onde o dispositivo envia pacotes destinados a outras redes. Deve ser sempre o IP do roteador, nunca de outro dispositivo como um servidor."}}
+  },
+  {id:4,titulo:"Cabo de Rede sem Link",contexto:"Um técnico crimpa um cabo de rede de 15 metros para um novo posto de trabalho. Ao conectar, o LED da placa de rede não acende (sem link físico).",
+    topo:{dispositivos:[{id:'pc',label:'PC',icon:'pc'},{id:'switch',label:'Switch',icon:'switch'},{id:'router',label:'Roteador',icon:'router'},{id:'internet',label:'Internet',icon:'internet'}],slots:[{id:'s1',label:'PC → conectar em:',gabarito:'switch',porta:'RJ-45'},{id:'s2',label:'Switch → conectar em:',gabarito:'router',porta:'Uplink'},{id:'s3',label:'Roteador → conectar em:',gabarito:'internet',porta:'WAN'}],feedback:{correct:"Topologia correta. O problema não está na topologia, mas na qualidade do cabo crimpado. LED apagado = ausência de link físico, geralmente crimpagem fora do padrão T568B.",wrong:"PC → Switch → Roteador → Internet. O PC se conecta ao switch, não diretamente ao roteador."}},
+    config:{instrucao:"Configure o PC com IP via DHCP. O roteador (192.168.1.1) distribui automaticamente. Preencha os valores esperados.",campos:[{id:'ip',label:'IP obtido (DHCP)',gabarito:'192.168.1.101',placeholder:'192.168.1.xxx',hint_ok:'✓ IP no range DHCP',hint_err:'Use um IP no range DHCP: 192.168.1.100 a .200'},{id:'mask',label:'Máscara',gabarito:'255.255.255.0',placeholder:'255.255.255.0',hint_ok:'✓ Máscara correta',hint_err:'Máscara padrão: 255.255.255.0'},{id:'gw',label:'Gateway padrão',gabarito:'192.168.1.1',placeholder:'192.168.1.1',hint_ok:'✓ Gateway é o roteador',hint_err:'O gateway padrão é o roteador: 192.168.1.1'}]},
+    quiz:{pergunta:"O LED da placa continua apagado mesmo após configurar o IP. Qual deve ser o próximo passo?",opcoes:["Reinstalar os drivers da placa de rede no Windows","Testar o cabo com um testador RJ-45 e verificar a sequência T568B","Trocar o switch por um modelo mais recente","Configurar IP estático no lugar do DHCP"],gabarito_idx:1,feedback:{correct:"Correto! LED apagado = problema físico (camada 1). O testador RJ-45 revela imediatamente se os fios estão na ordem correta. Software e IP não resolvem falha física no cabo.",wrong:"LED apagado indica falha na camada física — o sinal elétrico não está chegando. O testador de cabo é sempre o primeiro passo para diagnosticar link físico ausente."}}
+  },
+  {id:5,titulo:"Rede Wi-Fi + Cabeada",contexto:"Um escritório tem PCs com cabo e laptops sem fio. Monte a rede usando switch para os PCs e roteador Wi-Fi para os laptops.",
+    topo:{dispositivos:[{id:'pc1',label:'PC',icon:'pc'},{id:'switch',label:'Switch',icon:'switch'},{id:'router',label:'Roteador Wi-Fi',icon:'router'},{id:'laptop',label:'Laptop',icon:'laptop'},{id:'internet',label:'Internet',icon:'internet'}],slots:[{id:'s1',label:'PC → conectar em:',gabarito:'switch',porta:'Fa0/1'},{id:'s2',label:'Switch → conectar em:',gabarito:'router',porta:'LAN'},{id:'s3',label:'Laptop → conectar em:',gabarito:'router',porta:'Wi-Fi'},{id:'s4',label:'Roteador → conectar em:',gabarito:'internet',porta:'WAN'}],feedback:{correct:"Ótimo! PCs cabeados conectam no switch; o switch se conecta na porta LAN do roteador. Laptops conectam via Wi-Fi diretamente ao roteador. Roteador sai para internet pela WAN.",wrong:"PCs usam cabo → switch → roteador (porta LAN). Laptops conectam via Wi-Fi no roteador. O roteador acessa a internet pela porta WAN."}},
+    config:{instrucao:"Configure o laptop para a rede Wi-Fi. Roteador: 172.16.0.1, rede 172.16.0.0/24.",campos:[{id:'ip',label:'IP do Laptop',gabarito:'172.16.0.50',placeholder:'172.16.0.xxx',hint_ok:'✓ IP válido para esta rede',hint_err:'Use um IP na rede 172.16.0.x (ex: 172.16.0.50)'},{id:'mask',label:'Máscara',gabarito:'255.255.255.0',placeholder:'255.255.255.0',hint_ok:'✓ Máscara /24 correta',hint_err:'Máscara correta para /24: 255.255.255.0'},{id:'gw',label:'Gateway',gabarito:'172.16.0.1',placeholder:'172.16.0.x',hint_ok:'✓ Gateway correto',hint_err:'O gateway é o roteador: 172.16.0.1'},{id:'dns',label:'DNS',gabarito:'1.1.1.1',placeholder:'1.1.1.1',hint_ok:'✓ DNS da Cloudflare configurado',hint_err:'Use um DNS válido: 1.1.1.1 (Cloudflare) ou 8.8.8.8 (Google)'}]},
+    quiz:{pergunta:"O PC cabeado acessa a internet, mas o laptop Wi-Fi não consegue. Ambos estão na mesma sub-rede. Causa mais provável?",opcoes:["O switch tem portas insuficientes para o laptop","A senha do Wi-Fi está incorreta ou o laptop está conectado à rede errada","O laptop precisa de IP estático para funcionar no Wi-Fi","O roteador não suporta conexões simultâneas de cabo e Wi-Fi"],gabarito_idx:1,feedback:{correct:"Correto! Se a LAN cabeada funciona, o roteador e a sub-rede estão OK. O problema é específico da conexão Wi-Fi: senha errada ou SSID incorreto.",wrong:"Se o PC cabeado funciona, o roteador e a sub-rede estão OK. O problema é específico da conexão sem fio do laptop: verifique SSID correto e senha."}}
+  },
+  {id:6,titulo:"Gateway Incorreto",contexto:"Três PCs de um laboratório acessam a rede local normalmente (compartilham arquivos), mas nenhum consegue abrir sites da internet.",
+    topo:{dispositivos:[{id:'pc1',label:'PC 1',icon:'pc'},{id:'pc2',label:'PC 2',icon:'pc'},{id:'pc3',label:'PC 3',icon:'pc'},{id:'switch',label:'Switch',icon:'switch'},{id:'router',label:'Roteador',icon:'router'}],slots:[{id:'s1',label:'PC 1 → conectar em:',gabarito:'switch',porta:'Fa0/1'},{id:'s2',label:'PC 2 → conectar em:',gabarito:'switch',porta:'Fa0/2'},{id:'s3',label:'PC 3 → conectar em:',gabarito:'switch',porta:'Fa0/3'},{id:'s4',label:'Switch → conectar em:',gabarito:'router',porta:'Uplink'}],feedback:{correct:"Topologia correta. O problema não é físico — se os PCs se comunicam entre si, a LAN funciona. O problema está na configuração do gateway em cada máquina.",wrong:"Todos os PCs conectam no switch. O switch conecta no roteador. Esta é a topologia correta para LAN com saída para internet."}},
+    config:{instrucao:"Corrija o PC 1. Roteador: 10.10.10.1, rede 10.10.10.0/24. O PC estava com gateway errado (10.10.10.100).",campos:[{id:'ip',label:'IP do PC 1',gabarito:'10.10.10.50',placeholder:'10.10.10.xxx',hint_ok:'✓ IP válido na rede',hint_err:'Use um IP na rede 10.10.10.x'},{id:'mask',label:'Máscara',gabarito:'255.255.255.0',placeholder:'255.255.255.0',hint_ok:'✓ Máscara correta',hint_err:'Use 255.255.255.0'},{id:'gw',label:'Gateway (correto)',gabarito:'10.10.10.1',placeholder:'10.10.10.x',hint_ok:'✓ Gateway agora aponta para o roteador!',hint_err:'O gateway DEVE ser o roteador: 10.10.10.1 — não outro PC'},{id:'dns',label:'DNS',gabarito:'8.8.8.8',placeholder:'8.8.8.8',hint_ok:'✓ DNS configurado',hint_err:'Use 8.8.8.8'}]},
+    quiz:{pergunta:"Após corrigir o gateway no PC 1, ele acessa a internet. Mas os PCs 2 e 3 continuam sem internet. Qual é a solução?",opcoes:["Reiniciar o switch para limpar a tabela MAC","Corrigir o gateway nos PCs 2 e 3 também, pois cada dispositivo tem sua própria configuração","Trocar o roteador por um modelo mais potente","Conectar os PCs diretamente ao roteador sem o switch"],gabarito_idx:1,feedback:{correct:"Exato! Cada dispositivo tem sua própria configuração de rede. Corrigir o gateway no PC 1 não afeta os outros PCs. É necessário corrigir em cada máquina individualmente.",wrong:"As configurações de rede são individuais por dispositivo. Corrigir o gateway no PC 1 não propaga automaticamente. Cada PC precisa ter seu gateway configurado corretamente."}}
+  },
+  {id:7,titulo:"DNS com Falha",contexto:"Um PC consegue pingar o IP 8.8.8.8 com sucesso, mas ao digitar 'www.google.com' no navegador aparece: 'Servidor DNS não encontrado'.",
+    topo:{dispositivos:[{id:'pc',label:'PC',icon:'pc'},{id:'switch',label:'Switch',icon:'switch'},{id:'router',label:'Roteador',icon:'router'},{id:'internet',label:'Internet',icon:'internet'}],slots:[{id:'s1',label:'PC → conectar em:',gabarito:'switch',porta:'Fa0/1'},{id:'s2',label:'Switch → conectar em:',gabarito:'router',porta:'Uplink'},{id:'s3',label:'Roteador → conectar em:',gabarito:'internet',porta:'WAN'}],feedback:{correct:"Topologia correta. O problema não é físico nem de roteamento — o PC já pinga IPs externos. O problema é exclusivamente na resolução de nomes (DNS).",wrong:"PC → Switch → Roteador → Internet. A topologia básica é sempre essa."}},
+    config:{instrucao:"O PC está com DNS vazio. Configure corretamente. Roteador: 192.168.1.1, rede 192.168.1.0/24.",campos:[{id:'ip',label:'IP do PC',gabarito:'192.168.1.105',placeholder:'192.168.1.xxx',hint_ok:'✓ IP correto',hint_err:'Use um IP no range: 192.168.1.100 a .200'},{id:'mask',label:'Máscara',gabarito:'255.255.255.0',placeholder:'255.255.255.0',hint_ok:'✓ Correto',hint_err:'Use 255.255.255.0'},{id:'gw',label:'Gateway',gabarito:'192.168.1.1',placeholder:'192.168.1.1',hint_ok:'✓ Gateway correto',hint_err:'Gateway: 192.168.1.1'},{id:'dns',label:'DNS (era o problema!)',gabarito:'8.8.8.8',placeholder:'8.8.8.8',hint_ok:'✓ DNS configurado — problema resolvido!',hint_err:'Configure um DNS válido: 8.8.8.8 (Google)'}]},
+    quiz:{pergunta:"Por que o PC consegue pingar 8.8.8.8 mas não acessa www.google.com?",opcoes:["Porque o navegador está desatualizado e não suporta HTTPS","Porque pingar usa o IP diretamente, enquanto acessar um site depende do DNS para traduzir o nome em IP","Porque o roteador bloqueia tráfego HTTP por padrão","Porque o Google está fora do ar naquele momento"],gabarito_idx:1,feedback:{correct:"Perfeito! Pingar 8.8.8.8 prova que há conectividade IP. Navegar em 'www.google.com' exige resolução DNS: o servidor DNS traduz o nome para um IP. Sem DNS, o navegador não sabe para onde enviar a requisição.",wrong:"O ping usa IP diretamente — não precisa de DNS. Sites usam nomes de domínio que precisam ser traduzidos para IPs pelo DNS. Sem DNS configurado, os nomes não resolvem mesmo com internet funcionando."}}
+  },
+  {id:8,titulo:"Rede Completa de Escritório",contexto:"Monte a rede completa de um escritório com: 1 PC, 1 servidor, 1 impressora de rede, 1 switch, 1 roteador e saída para internet.",
+    topo:{dispositivos:[{id:'pc1',label:'PC',icon:'pc'},{id:'server',label:'Servidor',icon:'server'},{id:'printer',label:'Impressora',icon:'printer'},{id:'switch',label:'Switch',icon:'switch'},{id:'router',label:'Roteador',icon:'router'},{id:'internet',label:'Internet',icon:'internet'}],slots:[{id:'s1',label:'PC → conectar em:',gabarito:'switch',porta:'Fa0/1'},{id:'s2',label:'Servidor → conectar em:',gabarito:'switch',porta:'Fa0/2'},{id:'s3',label:'Impressora → conectar em:',gabarito:'switch',porta:'Fa0/3'},{id:'s4',label:'Switch → conectar em:',gabarito:'router',porta:'Uplink'},{id:'s5',label:'Roteador → conectar em:',gabarito:'internet',porta:'WAN'}],feedback:{correct:"Montagem completa e correta! Todos os dispositivos da LAN (PC, servidor, impressora) conectam no switch. O switch conecta ao roteador, que acessa a internet pela WAN. Topologia profissional padrão.",wrong:"Todos os dispositivos da LAN (PC, servidor, impressora) DEVEM se conectar ao switch. Apenas o switch se conecta ao roteador. O roteador acessa a internet pela porta WAN."}},
+    config:{instrucao:"Configure o Servidor com IP fixo fora do DHCP. Rede: 192.168.10.0/24. Roteador: 192.168.10.1. DHCP: .100 a .200. Servidor: .10.",campos:[{id:'ip',label:'IP do Servidor',gabarito:'192.168.10.10',placeholder:'192.168.10.x',hint_ok:'✓ IP fixo fora do range DHCP',hint_err:'Servidor deve usar 192.168.10.10 (fora do range .100–.200)'},{id:'mask',label:'Máscara',gabarito:'255.255.255.0',placeholder:'255.255.255.0',hint_ok:'✓ Máscara correta',hint_err:'Use 255.255.255.0'},{id:'gw',label:'Gateway',gabarito:'192.168.10.1',placeholder:'192.168.10.x',hint_ok:'✓ Gateway correto',hint_err:'Gateway: 192.168.10.1'},{id:'dns',label:'DNS',gabarito:'8.8.4.4',placeholder:'8.8.4.4',hint_ok:'✓ DNS secundário do Google configurado',hint_err:'Use um DNS válido: 8.8.4.4 (DNS secundário do Google)'}]},
+    quiz:{pergunta:"O PC não consegue imprimir na impressora (IP 192.168.10.20), mas pinga o servidor normalmente. Causa mais provável?",opcoes:["O switch não tem portas suficientes para todos os dispositivos","A impressora está com IP incorreto ou fora da mesma sub-rede","O servidor está ocupando toda a banda da rede","O roteador bloqueia a comunicação interna entre dispositivos"],gabarito_idx:1,feedback:{correct:"Correto! Se o PC pinga o servidor (mesma rede) mas não alcança a impressora, o problema está na configuração de IP da impressora — IP errado, máscara diferente ou fora da sub-rede 192.168.10.0/24.",wrong:"Se o PC pinga o servidor, o switch funciona e o roteador não bloqueia tráfego local. O problema está especificamente na configuração da impressora: IP errado ou fora da sub-rede correta."}}
+  }
+];
+
+// ══════════════════════════════════════════
+// ESTADO
+// ══════════════════════════════════════════
+let currentScene=0,scoreCorrect=0,scoreWrong=0,results=[];
+let topoSelected=null,topoFilled={},topoAnswered=false;
+let configAnswered={},quizAnswered=false;
+
+function resetSceneState(){topoSelected=null;topoFilled={};topoAnswered=false;configAnswered={};quizAnswered=false;}
+
+function renderScene(){
+  resetSceneState();
+  const c=cenarios[currentScene];
+  document.getElementById('badge-scene').textContent=`Cen. ${currentScene+1}/8`;
+  document.getElementById('scene-current').textContent=currentScene+1;
+  document.getElementById('scene-score-label').innerHTML=`✓ ${scoreCorrect} &nbsp;✗ ${scoreWrong}`;
+  document.getElementById('progress-fill').style.width=((currentScene/8)*100)+'%';
+  document.getElementById('screen-game').innerHTML=`
+    <div class="scene-card">
+      <div class="scene-num">Cenário ${String(c.id).padStart(2,'0')}</div>
+      <div class="scene-title">${c.titulo}</div>
+      <div class="scene-context"><div class="scene-context-label">📋 Situação</div><div class="scene-context-text">${c.contexto}</div></div>
+    </div>
+    <div class="phase-steps">
+      <div class="phase-step active" id="pstep-0"></div>
+      <div class="phase-step" id="pstep-1"></div>
+      <div class="phase-step" id="pstep-2"></div>
+    </div>
+    <div id="topo-section"></div>
+    <div id="config-section" style="display:none"></div>
+    <div id="quiz-section" style="display:none"></div>
+    <button class="btn-next" id="btn-next"></button>`;
+  renderTopo();
+}
+
+// ── FASE 1: TOPOLOGIA ──
+function renderTopo(){
+  const c=cenarios[currentScene];
+  document.getElementById('topo-section').innerHTML=`
+    <div class="phase-label">🔌 Fase 1 — Monte a topologia</div>
+    <div class="topo-wrap">
+      <div class="topo-instruction">Toque num <strong>dispositivo</strong> para selecioná-lo, depois toque no <strong>slot</strong> onde ele deve se conectar.</div>
+      <div class="topo-canvas">
+        <div class="topo-devices" id="topo-devices">
+          ${c.topo.dispositivos.map(d=>`
+            <div class="topo-device" id="tdev-${d.id}" onclick="selectDevice('${d.id}')">
+              <div class="topo-device-icon">${ICONS[d.icon]||ICONS.pc}</div>
+              <div class="topo-device-label">${d.label}</div>
+            </div>`).join('')}
+        </div>
+        <div class="topo-slots">
+          ${c.topo.slots.map(s=>`
+            <div class="topo-slot" id="tslot-${s.id}" onclick="fillSlot('${s.id}')">
+              <div style="width:28px;height:28px;flex-shrink:0;display:flex;align-items:center;justify-content:center" id="tslot-icon-${s.id}">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="7" stroke="#0FC4C4" stroke-width="1.2" stroke-dasharray="3 2"/></svg>
+              </div>
+              <span id="tslot-label-${s.id}">${s.label}</span>
+              <span class="topo-slot-port">${s.porta}</span>
+            </div>`).join('')}
+        </div>
+      </div>
+      <div class="topo-feedback" id="topo-feedback"></div>
+      <button class="config-btn" id="topo-validate-btn" onclick="validateTopo()" style="display:none">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8l4 4 6-7" stroke="#0FC4C4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Verificar topologia
+      </button>
+    </div>`;
+}
+
+function selectDevice(id){
+  if(topoAnswered)return;
+  document.querySelectorAll('.topo-device').forEach(el=>el.classList.remove('selected'));
+  topoSelected=id;
+  document.getElementById(`tdev-${id}`).classList.add('selected');
+}
+
+function fillSlot(slotId){
+  if(topoAnswered||!topoSelected)return;
+  const c=cenarios[currentScene];
+  const slot=c.topo.slots.find(s=>s.id===slotId);
+  if(!slot)return;
+  topoFilled[slotId]=topoSelected;
+  const dev=c.topo.dispositivos.find(d=>d.id===topoSelected);
+  document.getElementById(`tslot-label-${slotId}`).textContent=`${slot.label.split('→')[0].trim()} → ${dev.label}`;
+  document.getElementById(`tslot-icon-${slotId}`).innerHTML=`<div style="width:28px;height:28px">${ICONS[dev.icon]||ICONS.pc}</div>`;
+  document.getElementById(`tslot-${slotId}`).classList.add('filled');
+  document.getElementById(`tdev-${topoSelected}`).classList.remove('selected');
+  document.getElementById(`tdev-${topoSelected}`).classList.add('connected');
+  topoSelected=null;
+  if(c.topo.slots.every(s=>topoFilled[s.id]))
+    document.getElementById('topo-validate-btn').style.display='flex';
+}
+
+function validateTopo(){
+  if(topoAnswered)return;
+  topoAnswered=true;
+  const c=cenarios[currentScene];
+  let allOk=true;
+  c.topo.slots.forEach(s=>{
+    if(topoFilled[s.id]!==s.gabarito){
+      allOk=false;
+      const el=document.getElementById(`tslot-${s.id}`);
+      el.classList.remove('filled');el.classList.add('filled-wrong');
+    }
+  });
+  if(allOk)scoreCorrect++;else scoreWrong++;
+  document.getElementById('scene-score-label').innerHTML=`✓ ${scoreCorrect} &nbsp;✗ ${scoreWrong}`;
+  results.push({titulo:c.titulo,topoOk:allOk,configOk:null,quizOk:null});
+  const fb=document.getElementById('topo-feedback');
+  fb.className='topo-feedback show '+(allOk?'correct':'wrong');
+  fb.innerHTML=`<div class="topo-feedback-hdr"><span>${allOk?'✅':'❌'}</span><strong>${allOk?'Topologia correta!':'Conexão incorreta!'}</strong></div><p class="topo-feedback-txt">${allOk?c.topo.feedback.correct:c.topo.feedback.wrong}</p>`;
+  document.getElementById('topo-validate-btn').style.display='none';
+  setTimeout(()=>{
+    document.getElementById('pstep-0').classList.replace('active','done');
+    document.getElementById('pstep-1').classList.add('active');
+    document.getElementById('config-section').style.display='block';
+    renderConfig();
+    window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
+  },600);
+}
+
+// ── FASE 2: CONFIG IP ──
+function renderConfig(){
+  const c=cenarios[currentScene];
+  document.getElementById('config-section').innerHTML=`
+    <div class="phase-label">⚙️ Fase 2 — Configure a rede</div>
+    <div class="config-wrap">
+      <p style="font-size:13px;color:var(--gray);line-height:1.6;margin-bottom:14px">${c.config.instrucao}</p>
+      <div class="config-screen">
+        <div class="config-screen-bar">
+          <div class="cfg-dot" style="background:#E8445A"></div>
+          <div class="cfg-dot" style="background:#F5C842"></div>
+          <div class="cfg-dot" style="background:#1AB078"></div>
+          <span class="config-screen-title">Configurações TCP/IP</span>
+        </div>
+        ${c.config.campos.map(f=>`
+          <div class="config-row">
+            <div class="config-row-label">${f.label}</div>
+            <div style="flex:1">
+              <input class="config-input" id="cfg-${f.id}" placeholder="${f.placeholder}" oninput="checkField('${f.id}')" autocomplete="off" spellcheck="false"/>
+              <div class="config-hint" id="cfg-hint-${f.id}"></div>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+function checkField(fieldId){
+  const c=cenarios[currentScene];
+  const field=c.config.campos.find(f=>f.id===fieldId);
+  if(!field)return;
+  const input=document.getElementById(`cfg-${fieldId}`);
+  const hint=document.getElementById(`cfg-hint-${fieldId}`);
+  const val=input.value.trim();
+  if(!val){hint.textContent='';hint.className='config-hint';return;}
+  const ok=val===field.gabarito;
+  input.className='config-input '+(ok?'correct':'');
+  hint.className='config-hint '+(ok?'ok':'err');
+  hint.textContent=ok?field.hint_ok:field.hint_err;
+  if(ok){
+    configAnswered[fieldId]=true;
+    input.disabled=true;
+    if(c.config.campos.every(f=>configAnswered[f.id])){
+      scoreCorrect++;
+      document.getElementById('scene-score-label').innerHTML=`✓ ${scoreCorrect} &nbsp;✗ ${scoreWrong}`;
+      if(results.length>0)results[results.length-1].configOk=true;
+      setTimeout(()=>{
+        document.getElementById('pstep-1').classList.replace('active','done');
+        document.getElementById('pstep-2').classList.add('active');
+        document.getElementById('quiz-section').style.display='block';
+        renderQuiz();
+        window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
+      },500);
+    }
+  }
+}
+
+// ── FASE 3: QUIZ ──
+function renderQuiz(){
+  const c=cenarios[currentScene];
+  const letters=['A','B','C','D'];
+  const opts=c.quiz.opcoes.map((o,i)=>({text:o,correct:i===c.quiz.gabarito_idx})).sort(()=>Math.random()-.5);
+  document.getElementById('quiz-section').innerHTML=`
+    <div class="phase-label">🔍 Fase 3 — Diagnóstico</div>
+    <div class="quiz-wrap">
+      <div class="quiz-scenario"><div class="quiz-scenario-label">❓ Situação-problema</div><div class="quiz-scenario-text">${c.quiz.pergunta}</div></div>
+      <div class="quiz-options">
+        ${opts.map((o,i)=>`
+          <div class="quiz-opt" id="qopt-${i}" onclick="selectQuiz(${i},${o.correct})">
+            <div class="quiz-opt-letter">${letters[i]}</div>
+            <div class="quiz-opt-text">${o.text}</div>
+          </div>`).join('')}
+      </div>
+      <div class="quiz-feedback" id="quiz-feedback"></div>
+    </div>`;
+}
+
+function selectQuiz(idx,isCorrect){
+  if(quizAnswered)return;
+  quizAnswered=true;
+  document.querySelectorAll('.quiz-opt').forEach((el,i)=>{
+    if(i===idx)el.classList.add(isCorrect?'correct':'wrong');
+    el.classList.add('disabled');
+  });
+  if(!isCorrect){
+    document.querySelectorAll('.quiz-opt').forEach(el=>{
+      if(el.getAttribute('onclick')&&el.getAttribute('onclick').includes(',true)'))
+        el.classList.add('correct');
+    });
+  }
+  const c=cenarios[currentScene];
+  if(isCorrect)scoreCorrect++;else scoreWrong++;
+  document.getElementById('scene-score-label').innerHTML=`✓ ${scoreCorrect} &nbsp;✗ ${scoreWrong}`;
+  if(results.length>0)results[results.length-1].quizOk=isCorrect;
+  const fb=document.getElementById('quiz-feedback');
+  fb.className='quiz-feedback show '+(isCorrect?'correct':'wrong');
+  fb.innerHTML=`<div class="quiz-feedback-hdr"><span>${isCorrect?'✅':'❌'}</span><strong>${isCorrect?'Diagnóstico correto!':'Raciocínio incorreto!'}</strong></div><p class="quiz-feedback-txt">${isCorrect?c.quiz.feedback.correct:c.quiz.feedback.wrong}</p>`;
+  document.getElementById('pstep-2').classList.replace('active','done');
+  const btn=document.getElementById('btn-next');
+  const isLast=currentScene>=cenarios.length-1;
+  btn.textContent=isLast?'Ver resultado final →':'Próximo cenário →';
+  btn.onclick=isLast?showResult:nextScene;
+  btn.classList.add('show');
+  setTimeout(()=>window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'}),100);
+}
+
+// ── NAVEGAÇÃO ──
+function nextScene(){currentScene++;renderScene();window.scrollTo({top:0,behavior:'smooth'});}
+
+function showResult(){
+  document.getElementById('screen-game').style.display='none';
+  document.getElementById('progress-fill').style.width='100%';
+  document.getElementById('badge-scene').textContent='8/8';
+  document.getElementById('screen-result').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+  document.getElementById('result-num').textContent=scoreCorrect;
+  const max=24;
+  setTimeout(()=>{
+    const arc=document.getElementById('score-arc');
+    arc.style.transition='stroke-dashoffset 1s cubic-bezier(.4,0,.2,1)';
+    arc.style.strokeDashoffset=364-(scoreCorrect/max)*364;
+    arc.style.stroke=scoreCorrect>=20?'#1AB078':scoreCorrect>=12?'#F7732A':'#E8445A';
+  },150);
+  let title,subtitle;
+  if(scoreCorrect>=22){title='🏆 Especialista em Redes!';subtitle='Domínio completo de topologia, configuração e diagnóstico. Você está pronto para montar redes reais!';}
+  else if(scoreCorrect>=14){title='🎉 Excelente!';subtitle='Ótimo desempenho! Revise os cenários que errou para dominar todos os conceitos.';}
+  else if(scoreCorrect>=8){title='💪 Bom progresso!';subtitle='Você entende os fundamentos. Pratique mais a configuração de IPs e diagnóstico de rede.';}
+  else{title='📚 Continue estudando!';subtitle='Revise os conceitos de topologia de rede e endereçamento IP no material da disciplina.';}
+  document.getElementById('result-title').textContent=title;
+  document.getElementById('result-subtitle').textContent=subtitle;
+  const list=document.getElementById('breakdown-list');
+  list.innerHTML='';
+  results.forEach(r=>{
+    const row=document.createElement('div');
+    row.className='breakdown-row';
+    row.innerHTML=`
+      <div class="breakdown-case">${r.titulo}</div>
+      <div class="breakdown-badges">
+        <span class="bd-badge ${r.topoOk?'ok':'err'}">🔌${r.topoOk?'✓':'✗'}</span>
+        <span class="bd-badge ${r.configOk?'ok':'err'}">⚙️${r.configOk?'✓':'✗'}</span>
+        <span class="bd-badge ${r.quizOk?'ok':'err'}">🔍${r.quizOk?'✓':'✗'}</span>
+      </div>`;
+    list.appendChild(row);
+  });
+}
+
+function restartGame(){currentScene=0;scoreCorrect=0;scoreWrong=0;results=[];document.getElementById('screen-result').style.display='none';document.getElementById('screen-game').style.display='block';renderScene();window.scrollTo({top:0,behavior:'smooth'});}
+function goBack(){history.back();}
+function goHome(){window.location.href='index.html';}
+
+renderScene();
+</script>
+</body>
+</html>
